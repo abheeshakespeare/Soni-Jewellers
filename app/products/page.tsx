@@ -165,15 +165,15 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
         {/* Mobile Filter Button */}
         <div className="block lg:hidden mb-8">
-          <div className="flex flex-row gap-3 justify-center">
+          <div className="flex flex-row gap-3 justify-center overflow-x-auto scrollbar-hide flex-nowrap px-1 -mx-1">
             <MobileFilterButton
               searchParams={searchParams}
               categories={categories}
               collectionTypes={collectionTypes}
-              buttonClassName="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105"
+              buttonClassName="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 flex-shrink-0"
             />
             <Link href="/products">
-              <Button className="bg-white/90 hover:bg-white text-amber-700 border-2 border-amber-200 hover:border-amber-300 font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105">
+              <Button className="bg-white/90 hover:bg-white text-amber-700 border-2 border-amber-200 hover:border-amber-300 font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 flex-shrink-0">
                 Clear Filters
               </Button>
             </Link>

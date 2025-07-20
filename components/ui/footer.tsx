@@ -16,8 +16,8 @@ export default function Footer() {
                 className="h-14 w-14 rounded-full border-2 border-yellow-800 shadow-md"
                 style={{ filter: 'contrast(1.3)', background: 'white' }}
               />
-              <span className="text-yellow-500 text-2xl font-bold">Soni Jewellers<br/>
-              <span className="text-yellow-400 text-sm font-bold">And Navratna Bhandar</span></span>
+              <span className="text-yellow-500 text-2xl font-bold">Soni Navratna Jewellers<br/>
+              </span>
             </div>
             <div className="flex space-x-4">
               <address className="text-gray-400">
