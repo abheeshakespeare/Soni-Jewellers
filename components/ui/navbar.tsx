@@ -140,17 +140,16 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-          <img
-            src="/logo.png"
-            alt="Soni Jewellers Logo"
-            className="h-14 w-14 rounded-full border-2 border-yellow-800 shadow-md"
-            style={{ filter: 'contrast(1.3)', background: 'white' }}
-          />
-          <div className="flex flex-col">
-          <span className="text-yellow-800 text-2xl font-bold">Soni Jewellers</span>
-          <span className="text-yellow-800  font-bold">And Navratna Bhandar</span>
-          </div>
+          <Link href="/" className="flex items-center gap-2 min-w-0 max-w-full">
+            <img
+              src="/logo.png"
+              alt="Soni Navratna Jewellers Logo"
+              className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-full border-2 border-yellow-800 shadow-md flex-shrink-0 bg-white"
+              style={{ filter: 'contrast(1.3)' }}
+            />
+            <span className="text-yellow-800 font-bold text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl leading-tight text-center sm:text-left break-words">
+              Soni Navratna Jewellers
+            </span>
           </Link>
 
 
@@ -253,14 +252,10 @@ export default function Navbar() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-            <SheetContent side="left" className="w-80 bg-gradient-to-br from-amber-50 to-yellow-50 border-r border-amber-200 p-0">
+            <SheetContent side="left" className="w-full max-w-xs sm:w-80 bg-gradient-to-br from-amber-50 to-yellow-50 border-r border-amber-200 p-0 overflow-y-auto">
               <SheetHeader className="border-b border-amber-200 pb-4">
                 <SheetTitle className="flex items-center justify-between text-amber-800">
                   <span className="text-xl font-bold">Menu</span>
-                  <Button variant="ghost" size="sm" className="text-amber-600 hover:bg-amber-100 hover:text-amber-800" onClick={() => setIsMenuOpen(false)}>
-                    <X className="h-4 w-4 mr-1" />
-                    Close
-                  </Button>
                 </SheetTitle>
               </SheetHeader>
               <div className="mt-6 space-y-4 px-4">

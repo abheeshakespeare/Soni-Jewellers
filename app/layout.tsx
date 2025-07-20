@@ -41,33 +41,26 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <WishlistProvider>
-            <Navbar />
-            <main className="min-h-screen">{children}</main>
-            <Suspense fallback={<Skeleton className="h-40" />}>
-              <Footer />
-            </Suspense>
-            <Toaster 
-              position="bottom-right"
-              toastOptions={{
-                style: toastStyles,
-                classNames: {
-                  toast: "group toast group-[.toaster]:bg-white group-[.toaster]:text-zinc-950 group-[.toaster]:border-zinc-200 group-[.toaster]:shadow-lg md:w-[420px] md:p-6 md:text-lg",
-                  description: "group-[.toast]:text-zinc-500 md:text-base",
-                  actionButton: "group-[.toast]:bg-zinc-900 group-[.toast]:text-zinc-50",
-                  cancelButton: "group-[.toast]:bg-zinc-100 group-[.toast]:text-zinc-500",
-                },
-              }}
-              className="toaster"
-            />
-          </WishlistProvider>
-        </ThemeProvider>
+        <WishlistProvider>
+          <Navbar />
+          <main className="min-h-screen">{children}</main>
+          <Suspense fallback={<Skeleton className="h-40" />}>
+            <Footer />
+          </Suspense>
+          <Toaster 
+            position="bottom-right"
+            toastOptions={{
+              style: toastStyles,
+              classNames: {
+                toast: "group toast group-[.toaster]:bg-white group-[.toaster]:text-zinc-950 group-[.toaster]:border-zinc-200 group-[.toaster]:shadow-lg md:w-[420px] md:p-6 md:text-lg",
+                description: "group-[.toast]:text-zinc-500 md:text-base",
+                actionButton: "group-[.toast]:bg-zinc-900 group-[.toast]:text-zinc-50",
+                cancelButton: "group-[.toast]:bg-zinc-100 group-[.toast]:text-zinc-500",
+              },
+            }}
+            className="toaster"
+          />
+        </WishlistProvider>
       </body>
     </html>
   )
