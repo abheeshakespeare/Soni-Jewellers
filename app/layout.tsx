@@ -16,9 +16,40 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Soni Jewellers",
-  description: "Luxury jewellery for every occasion",
-}
+  title: "Soni Navratna Jewellers | Latehar",
+  description: "Luxury jewellery for every occasion in Latehar District. Explore gold, silver, and custom jewellery at Soni Navratna Jewellers.",
+  keywords: [
+    "jewellery shop Latehar",
+    "gold jewellery",
+    "silver jewellery",
+    "Soni Navratna Jewellers",
+    "custom jewellery Latehar"
+  ],
+  metadataBase: new URL("https://www.soninavratnajewellers.in"), 
+  openGraph: {
+    title: "Soni Navratna Jewellers | Latehar",
+    description: "Premium jewellery showroom based in Latehar District. Elegant designs for every moment.",
+    url: "https://www.soninavratnajewellers.in",
+    siteName: "Soni Navratna Jewellers",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Soni Navratna Jewellers Logo",
+      },
+    ],
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Soni Navratna Jewellers | Latehar",
+    description: "Explore timeless jewellery pieces crafted in Latehar. Pure gold, pure elegance.",
+    images: ["/logo.png"],
+  }
+};
+
 
 // Add custom styles for toast on desktop
 const toastStyles = {
@@ -39,6 +70,7 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
         />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className={inter.className}>
         <WishlistProvider>
