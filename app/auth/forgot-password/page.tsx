@@ -40,22 +40,32 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <Crown className="mx-auto h-12 w-12 text-yellow-600" />
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">Forgot Password</h2>
-          <p className="mt-2 text-sm text-gray-600">Enter your email to receive a password reset link</p>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 flex items-center justify-center py-8 px-2 sm:px-4 lg:px-8">
+      <div className="w-full max-w-md mx-auto">
+        {/* Elegant Header Section */}
+        <div className="mb-8 text-center">
+          <div className="inline-block">
+            <img
+              src="/logo.png"
+              alt="Soni Navratna Jewellers Logo"
+              className="mx-auto h-14 w-14 rounded-full border-2 border-yellow-800 shadow-md bg-white mb-3"
+              style={{ filter: 'contrast(1.3)' }}
+            />
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 bg-clip-text text-transparent mb-2">
+              Forgot Password
+            </h1>
+            <div className="h-1 w-20 bg-gradient-to-r from-amber-400 to-yellow-500 mx-auto rounded-full mb-4"></div>
+            <p className="text-gray-600 text-base font-light">Enter your email to receive a password reset link</p>
+          </div>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Reset Password</CardTitle>
-            <CardDescription>We'll send you an email with a link to reset your password</CardDescription>
-          </CardHeader>
-          <CardContent>
+        {/* Auth Card */}
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-amber-200/50 max-w-full mx-auto">
+          {/* Gradient Bar at Top */}
+          <div className="h-1.5 w-full bg-gradient-to-r from-amber-400 to-yellow-500 rounded-t-2xl mb-0" />
+          <div className="px-4 py-6 sm:px-6 sm:py-8">
             <form onSubmit={handleResetPassword} className="space-y-4">
-              <div>
+              <div className="space-y-1">
                 <Label htmlFor="email">Email</Label>
                 <Input 
                   id="email" 
@@ -78,8 +88,8 @@ export default function ForgotPasswordPage() {
                 </Link>
               </div>
             </form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   )
