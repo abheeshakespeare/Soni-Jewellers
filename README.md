@@ -1,4 +1,4 @@
-# Tanishq Jewelry Shop
+# TSoni Jewellers And Navratna Bhandar
 
 A premium jewelry e-commerce website built with Next.js 14, Supabase, and Tailwind CSS.
 
