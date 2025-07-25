@@ -15,24 +15,27 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const supabase = createClient()
 
-  const handleResetPassword = async (e: React.FormEvent) => {
+  const handleSendMagicLink = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/reset-password?next=/auth/reset-password`
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback` // or your desired callback page
+        }
       })
 
       if (error) {
-        console.error("Reset email error:", error)
+        console.error("Magic link error:", error)
         toast.error(error.message)
       } else {
-        toast.success("If an account exists with this email, you will receive a password reset link.")
+        toast.success("If an account exists with this email, you will receive a magic link to sign in.")
         setEmail("")
       }
     } catch (error) {
-      console.error("Reset request error:", error)
+      console.error("Magic link request error:", error)
       toast.error("An error occurred. Please try again.")
     } finally {
       setIsLoading(false)
@@ -64,7 +67,7 @@ export default function ForgotPasswordPage() {
           {/* Gradient Bar at Top */}
           <div className="h-1.5 w-full bg-gradient-to-r from-amber-400 to-yellow-500 rounded-t-2xl mb-0" />
           <div className="px-4 py-6 sm:px-6 sm:py-8">
-            <form onSubmit={handleResetPassword} className="space-y-4">
+            <form onSubmit={handleSendMagicLink} className="space-y-4">
               <div className="space-y-1">
                 <Label htmlFor="email">Email</Label>
                 <Input 
@@ -77,7 +80,7 @@ export default function ForgotPasswordPage() {
                 />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Sending..." : "Send Reset Link"}
+                {isLoading ? "Sending..." : "Send Magic Link"}
               </Button>
               <div className="text-center mt-4">
                 <Link 
