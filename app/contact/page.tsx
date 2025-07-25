@@ -72,17 +72,23 @@ export default function ContactPage() {
                       Need help? Our support team is here for you 24/7.
                     </p>
                     <a 
-                      href="tel:+919334997066, +919263879884"
+                      href="tel:+919334997066"
                       className="text-amber-600 hover:text-amber-700 block mb-1 font-medium text-sm"
                     >
-                      +91 9334997066, +91 9263879884
+                      +91 9334997066
+                    </a>
+                    <a 
+                      href="tel:+919263879884"
+                      className="text-amber-600 hover:text-amber-700 block mb-1 font-medium text-sm"
+                    >
+                      +91 9263879884
                     </a>
                     <br/>
                     <a 
-                      href="mailto:sonijewellers@gmail.com"
+                      href="mailto:sonijewellers070@gmail.com"
                       className="text-amber-600 hover:text-amber-700 font-medium text-sm"
                     >
-                      support@sonijewellers.com
+                      sonijewellers070@gmail.com
                     </a>
                   </div>
                 </div>
@@ -113,7 +119,7 @@ export default function ContactPage() {
                     <p className="text-amber-700 text-sm">
                       Opp. V-Mart, Main Road Latehar, Jharkhand<br />
                       Phone: 9334997066, 9263879884<br />
-                      Email: support@sonijewellers.com
+                      Email: sonijewellers070@gmail.com
                     </p>  
                   </div>
                 </div>

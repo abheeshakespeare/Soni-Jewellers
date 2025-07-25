@@ -147,8 +147,9 @@ export default function Navbar() {
               className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-full border-2 border-yellow-800 shadow-md flex-shrink-0 bg-white"
               style={{ filter: 'contrast(1.3)' }}
             />
-            <span className="text-yellow-800 font-bold text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl leading-tight text-center sm:text-left break-words">
-              Soni Navratna Jewellers
+            <span className="text-yellow-800 font-bold text-base sm:text-lg md:text-xl lg:text-xl xl:text-xl leading-tight text-left sm:text-left break-words">
+              Soni Jewellers<br />
+              And Navratna Bhandar
             </span>
           </Link>
 
@@ -252,7 +253,7 @@ export default function Navbar() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-            <SheetContent side="left" className="w-full max-w-xs sm:w-80 bg-gradient-to-br from-amber-50 to-yellow-50 border-r border-amber-200 p-0 overflow-y-auto">
+            <SheetContent side="right" className="w-full max-w-xs sm:w-80 bg-gradient-to-br from-amber-50 to-yellow-50 border-l border-amber-200 p-0 overflow-y-auto">
               <SheetHeader className="border-b border-amber-200 pb-4">
                 <SheetTitle className="flex items-center justify-between text-amber-800">
                   <span className="text-xl font-bold">Menu</span>

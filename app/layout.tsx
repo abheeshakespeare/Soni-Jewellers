@@ -16,9 +16,13 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Soni Navratna Jewellers | Latehar",
-  description: "Luxury jewellery for every occasion in Latehar District. Explore gold, silver, and custom jewellery at Soni Navratna Jewellers.",
+  title: "Soni Jewellers And Navratna Bhandar | Latehar",
+  description: "Luxury jewellery for every occasion in Latehar, Jharkhand. Explore gold, silver, and custom jewellery at Soni Jewellers.",
   keywords: [
+    "soni jewellers and navratna bhandar",
+    "soni jewellers",
+    "soni jewellers latehar",
+    "latehar jewellery shop",
     "jewellery shop Latehar",
     "gold jewellery",
     "silver jewellery",
@@ -27,16 +31,16 @@ export const metadata: Metadata = {
   ],
   metadataBase: new URL("https://www.soninavratnajewellers.in"), 
   openGraph: {
-    title: "Soni Navratna Jewellers | Latehar",
+    title: "Soni Jewellers And Navratna Bhandar | Latehar",
     description: "Premium jewellery showroom based in Latehar District. Elegant designs for every moment.",
     url: "https://www.soninavratnajewellers.in",
-    siteName: "Soni Navratna Jewellers",
+    siteName: "Soni Jewellers",
     images: [
       {
-        url: "/logo.png",
+        url: "https://www.soninavratnajewellers.in/logo.png",
         width: 1200,
         height: 630,
-        alt: "Soni Navratna Jewellers Logo",
+        alt: "Soni Jewellers Logo",
       },
     ],
     locale: "en_IN",
@@ -44,9 +48,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Soni Navratna Jewellers | Latehar",
+    title: "Soni Jewellers And Navratna Bhandar | Latehar",
     description: "Explore timeless jewellery pieces crafted in Latehar. Pure gold, pure elegance.",
-    images: ["/logo.png"],
+    images: ["https://www.soninavratnajewellers.in/logo.png/logo.png"],
   }
 };
 

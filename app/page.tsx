@@ -129,7 +129,7 @@ export default async function HomePage() {
       <section className="py-20 bg-white hidden md:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Soni Navratna Jewellers?</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Soni Jewellers And Navratna Bhandar?</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We combine traditional craftsmanship with modern technology to create jewellery that stands the test of time.
             </p>

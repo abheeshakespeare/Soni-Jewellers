@@ -16,14 +16,14 @@ export default function Footer() {
                 className="h-14 w-14 rounded-full border-2 border-yellow-800 shadow-md"
                 style={{ filter: 'contrast(1.3)', background: 'white' }}
               />
-              <span className="text-yellow-500 text-2xl font-bold">Soni Navratna Jewellers<br/>
+              <span className="text-yellow-500 text-xl font-bold">Soni Jewellers And Navratna Bhandar<br/>
               </span>
             </div>
             <div className="flex space-x-4">
               <address className="text-gray-400">
                 <p>Opp. V-Mart, Main Road Latehar, Jharkhand</p>
                 <p>Phone: 9334997066, 9263879884</p>
-                <p>Email: support@sonijewellers.com</p>
+                <p>Email: sonijewellers070@gmail.com</p>
               </address>
             </div>
           </div>
@@ -55,56 +55,10 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Legal</h3>
             <ul className="space-y-2">
-              <li>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="text-gray-400 hover:text-white underline underline-offset-2">Privacy Policy</button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Privacy Policy</DialogTitle>
-                      <DialogDescription>
-                        <div className="max-h-[60vh] overflow-y-auto text-gray-700 text-sm p-2">
-                          <p><b>Privacy Policy</b></p>
-                          <p>Your privacy is important to us. We collect and use your information only for order processing, payment, and customer support. We do not share your personal data with third parties except as required by law or payment processors. All payment transactions are encrypted and processed securely in compliance with RBI and payment gateway norms. You may review, update, or request deletion of your data at any time by contacting us at support@sonijewellers.com.</p>
-                          <ul className="list-disc pl-5 mt-2">
-                            <li>We do not store your card or payment details on our servers.</li>
-                            <li>All payments are processed through secure, PCI DSS-compliant gateways.</li>
-                            <li>We comply with all applicable data protection and privacy laws of India.</li>
-                          </ul>
-                          <p className="mt-2">For more information, contact us at support@sonijewellers.com.</p>
-                        </div>
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-              </li>
-              <li>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="text-gray-400 hover:text-white underline underline-offset-2">Terms of Service</button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Terms of Service</DialogTitle>
-                      <DialogDescription>
-                        <div className="max-h-[60vh] overflow-y-auto text-gray-700 text-sm p-2">
-                          <p><b>Terms of Service</b></p>
-                          <ul className="list-disc pl-5 mt-2">
-                            <li>By placing an order, you agree to our payment, shipping, and return policies.</li>
-                            <li>All advance payments are processed securely via authorized payment gateways.</li>
-                            <li>Orders are confirmed only after successful payment authorization.</li>
-                            <li>We reserve the right to cancel orders in case of payment failure, fraud, or policy violations.</li>
-                            <li>Refunds, if applicable, will be processed as per RBI and payment gateway guidelines.</li>
-                            <li>All disputes are subject to Latehar, Jharkhand jurisdiction.</li>
-                          </ul>
-                          <p className="mt-2">For full details, please contact us at support@sonijewellers.com.</p>
-                        </div>
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-              </li>
+              <li><Link href="/terms" className="text-gray-400 hover:text-white underline underline-offset-2">Terms & Conditions</Link></li>
+              <li><Link href="/privacy" className="text-gray-400 hover:text-white underline underline-offset-2">Privacy Policy</Link></li>
+              <li><Link href="/shipping" className="text-gray-400 hover:text-white underline underline-offset-2">Shipping Policy</Link></li>
+              <li><Link href="/refund" className="text-gray-400 hover:text-white underline underline-offset-2">Refund Policy</Link></li>
             </ul>
           </div>
 

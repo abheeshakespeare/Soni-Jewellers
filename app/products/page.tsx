@@ -31,7 +31,7 @@ async function getCategories(supabase: any) {
 
 function ProductGrid({ products }: { products: Product[] }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3">
       {products?.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
@@ -44,12 +44,12 @@ function buildFilterUrl(currentParams: any, newParams: any) {
   
   // Copy current params
   Object.entries(currentParams).forEach(([key, value]) => {
-    if (value && key !== 'search') { // Don't copy search param to avoid conflicts
+    if (value && key !== 'search') { 
       params.set(key, value as string)
     }
   })
   
-  // Apply new params
+  
   Object.entries(newParams).forEach(([key, value]) => {
     if (value === "all" || value === "" || value === undefined || value === null) {
       params.delete(key)
@@ -361,7 +361,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
           {/* Enhanced Products Grid */}
           <div className="flex-1">
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl border border-amber-200/50 shadow-xl overflow-hidden">
+            <div className="bg-white/95 backdrop-blur-sm rounded-xl border border-amber-200/50 shadow-xl overflow-hidden">
               <div className="bg-gradient-to-r from-amber-100 to-yellow-100 px-8 py-6">
                 <div className="flex justify-between items-center">
                   <div>
@@ -382,9 +382,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 </div>
               </div>
 
-              <div className="p-8">
+              <div className="px-0 py-3">
                 <Suspense fallback={
-                  <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3">
                     {Array.from({ length: 8 }).map((_, i) => (
                       <div key={i} className="group">
                         <Skeleton className="h-[400px] rounded-2xl" />
@@ -397,7 +397,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   </div>
                 }>
                   {filteredProducts && filteredProducts.length > 0 ? (
-                    <ProductGrid products={filteredProducts} />
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                      <ProductGrid products={filteredProducts} />
+                    </div>
                   ) : (
                     <div className="text-center py-20">
                       <div className="max-w-md mx-auto">
