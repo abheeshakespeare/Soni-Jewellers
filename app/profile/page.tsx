@@ -58,6 +58,16 @@ export default function ProfilePage() {
     pincode: "",
   })
 
+  // Add state for password change
+  const [showPasswordForm, setShowPasswordForm] = useState(false)
+  const [passwordData, setPasswordData] = useState({
+    newPassword: "",
+    confirmPassword: "",
+  })
+  const [passwordLoading, setPasswordLoading] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
   const router = useRouter()
   const supabase = createClient()
 
@@ -308,6 +318,46 @@ export default function ProfilePage() {
       ...prev,
       [name]: value
     }))
+  }
+
+  const handlePasswordInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setPasswordData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (passwordData.newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters long.")
+      return
+    }
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error("Passwords do not match.")
+      return
+    }
+    setPasswordLoading(true)
+    let error: any = null
+    try {
+      // Race between updateUser and a 2s timeout
+      await Promise.race([
+        (async () => {
+          const { error: updateError } = await supabase.auth.updateUser({ password: passwordData.newPassword })
+          if (updateError) throw updateError
+        })(),
+        new Promise((resolve) => setTimeout(resolve, 2000))
+      ])
+    } catch (err: any) {
+      error = err
+    } finally {
+      setPasswordLoading(false)
+      if (!error) {
+        toast.success("Password updated successfully!")
+        setPasswordData({ newPassword: "", confirmPassword: "" })
+        setShowPasswordForm(false)
+      } else {
+        toast.error("Error updating password: " + error.message)
+      }
+    }
   }
 
   if (isLoading) {
@@ -564,6 +614,119 @@ export default function ProfilePage() {
               </CardContent>
             </Card>
 
+            {/* Change Password Card */}
+            <Card className="bg-white/80 backdrop-blur-sm border-amber-200 shadow-xl">
+              <CardHeader className="border-b border-amber-100 bg-gradient-to-r from-amber-50 to-yellow-50">
+                <CardTitle className="text-2xl font-bold text-amber-800 flex items-center">
+                  <Lock className="w-6 h-6 mr-3" />
+                  Change Password
+                </CardTitle>
+                <CardDescription className="text-amber-600">
+                  Update your account password instantly. No email required.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-8">
+                {showPasswordForm ? (
+                  <form onSubmit={handleChangePassword} className="space-y-8">
+                    <div className="space-y-3">
+                      <Label htmlFor="newPassword" className="text-amber-800 font-medium flex items-center">
+                        <Lock className="w-4 h-4 mr-2" />
+                        New Password
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="newPassword"
+                          name="newPassword"
+                          type={showNewPassword ? "text" : "password"}
+                          value={passwordData.newPassword}
+                          onChange={handlePasswordInputChange}
+                          placeholder="Enter new password"
+                          className="h-12 border-amber-200 focus:border-amber-400 focus:ring-amber-400 text-gray-800 font-medium bg-white pr-12"
+                          autoComplete="new-password"
+                          minLength={8}
+                          required
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-amber-500 hover:text-amber-700"
+                          onClick={() => setShowNewPassword(v => !v)}
+                          tabIndex={-1}
+                        >
+                          {showNewPassword ? <Eye className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <Label htmlFor="confirmPassword" className="text-amber-800 font-medium flex items-center">
+                        <Lock className="w-4 h-4 mr-2" />
+                        Confirm New Password
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          type={showConfirmPassword ? "text" : "password"}
+                          value={passwordData.confirmPassword}
+                          onChange={handlePasswordInputChange}
+                          placeholder="Re-enter new password"
+                          className="h-12 border-amber-200 focus:border-amber-400 focus:ring-amber-400 text-gray-800 font-medium bg-white pr-12"
+                          autoComplete="new-password"
+                          minLength={8}
+                          required
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-amber-500 hover:text-amber-700"
+                          onClick={() => setShowConfirmPassword(v => !v)}
+                          tabIndex={-1}
+                        >
+                          {showConfirmPassword ? <Eye className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex justify-end pt-6 space-x-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="border-amber-300 text-amber-700 hover:bg-amber-50"
+                        onClick={() => setShowPasswordForm(false)}
+                        disabled={passwordLoading}
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="px-8 py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white rounded-full font-medium shadow-lg shadow-amber-500/25 transition-all duration-300 transform hover:scale-105"
+                        disabled={passwordLoading}
+                      >
+                        {passwordLoading ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                            Updating...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="w-4 h-4 mr-2" />
+                            Change Password
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                ) : (
+                  <Button
+                    variant="outline"
+                    className="border-amber-300 text-amber-700 hover:bg-amber-50 h-12"
+                    onClick={() => setShowPasswordForm(true)}
+                  >
+                    <Lock className="w-4 h-4 mr-2" />
+                    Change Password
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Orders Card */}
             <Card className="bg-white/80 backdrop-blur-sm border-amber-200 shadow-xl">
               <CardHeader className="border-b border-amber-100 bg-gradient-to-r from-amber-50 to-yellow-50">
@@ -572,7 +735,7 @@ export default function ProfilePage() {
                   My Orders
                 </CardTitle>
                 <CardDescription className="text-amber-600">
-                  View your jewelry purchase history and track current orders
+                  View your jewellery purchase history and track current orders
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-8">
@@ -582,18 +745,18 @@ export default function ProfilePage() {
                       <div className="w-32 h-32 mx-auto bg-gradient-to-br from-amber-100 to-yellow-100 rounded-full flex items-center justify-center">
                         <Gem className="w-16 h-16 text-amber-500" />
                       </div>
-                      <div className="absolute -top-3 -right-8 w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full flex items-center justify-center">
+                      <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full flex items-center justify-center">
                         <Crown className="w-5 h-5 text-white" />
                       </div>
                     </div>
                     <h3 className="text-2xl font-bold text-amber-800 mb-4">No orders yet</h3>
-                    <p className="text-amber-600 mb-8 text-lg">Start your jewelry collection journey with us!</p>
+                    <p className="text-amber-600 mb-8 text-lg">Start your jewellery collection journey with us!</p>
                     <Button 
                       className="px-8 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white rounded-full font-medium shadow-lg shadow-amber-500/25 transition-all duration-300 transform hover:scale-105"
                       onClick={() => router.push("/products")}
                     >
                       <Gem className="w-5 h-5 mr-2" />
-                      Explore Jewelry
+                      Explore Jewellery
                     </Button>
                   </div>
                 ) : (

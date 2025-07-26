@@ -168,13 +168,15 @@ export default async function HomePage() {
             
             <div className="text-center group">
               <div className="relative mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl mx-auto flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Truck className="h-10 w-10 text-white" />
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Secure Delivery</h3>
-              <p className="text-gray-600 leading-relaxed">Safe and insured delivery to your doorstep with real-time tracking.</p>
+              <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl mx-auto flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <Truck className="h-10 w-10 text-white" />
             </div>
+        </div>
+  <h3 className="text-xl font-semibold mb-3 text-gray-900">Store Pickup</h3>
+  <p className="text-gray-600 leading-relaxed">
+    Convenient in-store pickup available. Visit our store to collect your order safely and quickly.
+  </p>
+</div>
           </div>
         </div>
       </section>
@@ -280,7 +282,7 @@ export default async function HomePage() {
                 ))}
               </div>
               <p className="text-gray-700 mb-6 leading-relaxed">
-                "The quality of jewelry is exceptional. I've been a customer for years and never been disappointed. The craftsmanship is outstanding!"
+                "The quality of jewellery is exceptional. I've been a customer for years and never been disappointed. The craftsmanship is outstanding!"
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-white font-semibold">
@@ -320,7 +322,7 @@ export default async function HomePage() {
                 ))}
               </div>
               <p className="text-gray-700 mb-6 leading-relaxed">
-                "The online shopping experience is seamless. Fast delivery and the jewelry exceeded my expectations. Will definitely shop again!"
+                "The online shopping experience is seamless. Fast delivery and the jewellery exceeded my expectations. Will definitely shop again!"
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-white font-semibold">

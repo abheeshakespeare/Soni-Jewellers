@@ -185,7 +185,7 @@ function RelatedProducts({ products }: { products: any[] }) {
     <div className="space-y-6">
       <CardHeader className="border-b border-amber-100 bg-gradient-to-r from-amber-50 to-yellow-50 mb-4">
         <CardTitle className="text-2xl font-bold text-amber-800">You May Also Like</CardTitle>
-        <CardDescription className="text-amber-600">Explore more jewelry from this category</CardDescription>
+        <CardDescription className="text-amber-600">Explore more jewellery from this category</CardDescription>
       </CardHeader>
       {products.length === 0 ? (
         <div className="text-center py-8">
@@ -245,7 +245,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         <Card className="bg-white/80 backdrop-blur-sm border-amber-200 shadow-xl mb-16">
           <CardHeader className="border-b border-amber-100 bg-gradient-to-r from-amber-50 to-yellow-50">
             <CardTitle className="text-2xl font-bold text-amber-800">Product Details</CardTitle>
-            <CardDescription className="text-amber-600">See all information and specifications for this jewelry</CardDescription>
+            <CardDescription className="text-amber-600">See all information and specifications for this jewellery</CardDescription>
           </CardHeader>
           <CardContent className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Product Image */}

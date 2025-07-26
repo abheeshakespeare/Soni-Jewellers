@@ -10,6 +10,7 @@ import Link from "next/link"
 import SortDropdown from "./sort-dropdown"
 import SearchForm from "./search-form"
 import MobileFilterButton from "../../components/mobile-filter-button"
+import { Gem, Crown } from "lucide-react"
 
 interface ProductsPageProps {
   searchParams: {
@@ -30,9 +31,26 @@ async function getCategories(supabase: any) {
 }
 
 function ProductGrid({ products }: { products: Product[] }) {
+  if (!products || products.length === 0) {
+    return (
+      <div className="text-center py-16">
+        <div className="relative mb-8">
+          <div className="w-32 h-32 mx-auto bg-gradient-to-br from-amber-100 to-yellow-100 rounded-full flex items-center justify-center">
+            <Gem className="w-16 h-16 text-amber-500" />
+          </div>
+          <div className="absolute -top-3 -right-8 w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full flex items-center justify-center">
+            <Crown className="w-5 h-5 text-white" />
+          </div>
+        </div>
+        <h3 className="text-2xl font-bold text-amber-800 mb-4">No products found</h3>
+        <p className="text-amber-600 mb-8 text-lg">Try adjusting your search criteria or check back later.</p>
+      </div>
+    )
+  }
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3">
-      {products?.map((product) => (
+      {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
     </div>
@@ -49,7 +67,7 @@ function buildFilterUrl(currentParams: any, newParams: any) {
     }
   })
   
-  
+  // Apply new params
   Object.entries(newParams).forEach(([key, value]) => {
     if (value === "all" || value === "" || value === undefined || value === null) {
       params.delete(key)
@@ -60,6 +78,22 @@ function buildFilterUrl(currentParams: any, newParams: any) {
   
   const queryString = params.toString()
   return queryString ? `?${queryString}` : ""
+}
+
+function ClearFiltersButton({ hasActiveFilters }: { hasActiveFilters: boolean }) {
+  if (!hasActiveFilters) return null;
+  
+  return (
+    <Link href="/products">
+      <Button 
+        variant="outline" 
+        className="border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400 transition-all duration-200 bg-amber-50/50"
+      >
+        <span className="mr-2">🗑️</span>
+        Clear All Filters
+      </Button>
+    </Link>
+  )
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
@@ -137,6 +171,14 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     ? [...new Set(products.map((p: Product) => p.collection_type).filter(Boolean) as string[])]
     : []
 
+  const hasActiveFilters = !!(
+    searchParams.search || 
+    (searchParams.category && searchParams.category !== "all") || 
+    (searchParams.metal && searchParams.metal !== "all") || 
+    (searchParams.collection && searchParams.collection !== "all") || 
+    (searchParams.gender && searchParams.gender !== "all")
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -144,7 +186,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         <div className="mb-12 text-center">
           <div className="inline-block">
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 bg-clip-text text-transparent mb-4">
-              Exquisite Jewelry Collection
+              Exquisite Jewellery Collection
             </h1>
             <div className="h-1 w-32 bg-gradient-to-r from-amber-400 to-yellow-500 mx-auto rounded-full mb-6"></div>
             <p className="text-gray-600 text-lg font-light">Discover timeless elegance and craftsmanship</p>
@@ -172,11 +214,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               collectionTypes={collectionTypes}
               buttonClassName="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 flex-shrink-0"
             />
-            <Link href="/products">
-              <Button className="bg-white/90 hover:bg-white text-amber-700 border-2 border-amber-200 hover:border-amber-300 font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 flex-shrink-0">
-                Clear Filters
-              </Button>
-            </Link>
+            <ClearFiltersButton hasActiveFilters={hasActiveFilters} />
           </div>
         </div>
 
@@ -185,10 +223,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           <div className="lg:w-80 space-y-6 hidden lg:block">
             <div className="bg-white/95 backdrop-blur-sm rounded-2xl border border-amber-200/50 shadow-xl overflow-hidden">
               <div className="bg-gradient-to-r from-amber-100 to-yellow-100 px-6 py-4">
-                <h3 className="font-bold text-lg text-amber-800 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
-                  Refine Your Search
-                </h3>
+                <div className="flex justify-between items-center">
+                  <h3 className="font-bold text-lg text-amber-800 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
+                    Refine Your Search
+                  </h3>
+                  <ClearFiltersButton hasActiveFilters={hasActiveFilters} />
+                </div>
               </div>
               
               <div className="p-6 space-y-6">
@@ -377,7 +418,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                     </p>
                   </div>
                   <div className="hidden md:block">
-                    <SortDropdown />
+                    <div className="flex items-center gap-3">
+                      <ClearFiltersButton hasActiveFilters={hasActiveFilters} />
+                      <SortDropdown />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -407,13 +451,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                           <span className="text-4xl">💎</span>
                         </div>
                         <h3 className="text-2xl font-bold text-amber-800 mb-4">No Treasures Found</h3>
-                        <p className="text-amber-600 text-lg mb-2">We couldn't find any jewelry matching your criteria.</p>
+                        <p className="text-amber-600 text-lg mb-2">We couldn't find any jewellery matching your criteria.</p>
                         <p className="text-amber-500 text-sm mb-8">
                           We have {products.length} beautiful pieces in our collection
                         </p>
                         <Link href="/products">
                           <Button className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold px-8 py-3 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105">
-                            ✨ Explore All Jewelry
+                            ✨ Explore All Jewellery
                           </Button>
                         </Link>
                       </div>

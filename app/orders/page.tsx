@@ -60,7 +60,7 @@ export default async function OrdersPage() {
             <div className="w-32 h-32 mx-auto bg-gradient-to-br from-amber-100 to-yellow-100 rounded-full flex items-center justify-center">
               <Gem className="w-16 h-16 text-amber-500" />
             </div>
-            <div className="absolute -top-3 -right-8 w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full flex items-center justify-center">
+            <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-full flex items-center justify-center">
               <Crown className="w-5 h-5 text-white" />
             </div>
           </div>

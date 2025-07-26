@@ -11,20 +11,24 @@ export default function AuthCallbackPage() {
   const [isProcessing, setIsProcessing] = useState(true)
 
   useEffect(() => {
+    let didRedirect = false;
     const handleAuthCallback = async () => {
       try {
         // Get the session (should be set by server-side code exchange)
         const { data: { session }, error: sessionError } = await supabase.auth.getSession()
 
+        if (didRedirect) return;
         if (sessionError) {
           toast.error("Session error. Please try again.")
           router.replace('/auth')
+          didRedirect = true;
           return
         }
 
         if (!session?.user) {
           toast.error("No session found. Please sign in again.")
           router.replace('/auth')
+          didRedirect = true;
           return
         }
 
@@ -35,9 +39,11 @@ export default function AuthCallbackPage() {
           .eq('id', session.user.id)
           .maybeSingle()
 
+        if (didRedirect) return;
         if (userError) {
           toast.error("Error checking user profile.")
           router.replace('/')
+          didRedirect = true;
           return
         }
 
@@ -68,23 +74,33 @@ export default function AuthCallbackPage() {
             toast.success("Account created successfully!")
           }
           router.replace('/')
+          didRedirect = true;
         } else {
           toast.success("Welcome back!")
-          if (existingUser.role === 'admin') {
-            router.replace('/admin')
-          } else {
-            router.replace('/')
-          }
+          router.replace('/')
+          didRedirect = true;
         }
       } catch (error) {
-        toast.error("An unexpected error occurred. Please try again.")
-        router.replace('/auth')
+        if (!didRedirect) {
+          toast.error("An unexpected error occurred. Please try again.")
+          router.replace('/auth')
+          didRedirect = true;
+        }
       } finally {
         setIsProcessing(false)
       }
     }
 
+    // Timeout fallback: always redirect after 2s if not already redirected
+    const timeout = setTimeout(() => {
+      if (!didRedirect) {
+        router.replace('/')
+        didRedirect = true;
+      }
+    }, 2000)
+
     handleAuthCallback()
+    return () => clearTimeout(timeout)
   }, [router, supabase])
 
   return (

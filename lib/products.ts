@@ -45,21 +45,28 @@ export interface CreateProductData {
 export async function getProducts(): Promise<Product[]> {
   const supabase = createClient()
   
-  const { data, error } = await supabase
-    .from('products')
-    .select(`
-      *,
-      category:categories(id, name)
-    `)
-    .eq('is_active', true)
-    .order('created_at', { ascending: false })
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select(`
+        *,
+        category:categories(id, name)
+      `)
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
 
-  if (error) {
-    console.error('Error fetching products:', error)
-    throw error
+    if (error) {
+      console.error('Error fetching products:', error)
+      // Return empty array instead of throwing to prevent page crashes
+      return []
+    }
+
+    return data || []
+  } catch (error) {
+    console.error('Network error fetching products:', error)
+    // Return empty array on network errors to prevent page crashes
+    return []
   }
-
-  return data || []
 }
 
 export async function getAllProductsForAdmin(): Promise<Product[]> {
