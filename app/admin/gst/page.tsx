@@ -11,6 +11,7 @@ import { Edit, Save, X, Percent, Calculator, Receipt } from "lucide-react"
 import { toast } from "sonner"
 import Link from "next/link"
 import { getGstSettings, formatGstPercentage, formatCurrency, calculateGstAmount, calculateTotalWithGst } from "@/lib/gst"
+import { batchUpdateAllProductPrices } from '@/lib/products'
 
 interface GstSetting {
   id: number
@@ -26,6 +27,7 @@ export default function GstPage() {
   const [editingPercentage, setEditingPercentage] = useState(18.00)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [isBatchUpdating, setIsBatchUpdating] = useState(false)
   
   const supabase = createClient()
 
@@ -97,6 +99,19 @@ export default function GstPage() {
       toast.error('Failed to update GST percentage')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleBatchUpdatePrices = async () => {
+    setIsBatchUpdating(true)
+    try {
+      await batchUpdateAllProductPrices()
+      toast.success('All product prices updated based on new GST!')
+    } catch (err) {
+      toast.error('Failed to update product prices')
+      console.error(err)
+    } finally {
+      setIsBatchUpdating(false)
     }
   }
 
@@ -200,7 +215,7 @@ export default function GstPage() {
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Current GST Rate</p>
                     <p className="text-3xl font-bold text-gray-900">
-                      {formatGstPercentage(currentGst?.gst_percentage || 18.00)}
+                      {formatGstPercentage(currentGst?.gst_percentage || 0.00)}
                     </p>
                   </div>
                 )}
@@ -264,11 +279,16 @@ export default function GstPage() {
               <p className="text-sm text-blue-800 font-medium mb-1">How GST Works</p>
               <p className="text-sm text-blue-700">
                 GST is calculated on the total value of the product (metal value + making charges). 
-                The current rate of {formatGstPercentage(currentGst?.gst_percentage || 18.00)} will be applied to all jewelry products.
+                The current rate of {formatGstPercentage(currentGst?.gst_percentage || 0.00)} will be applied to all jewelry products.
               </p>
             </div>
           </div>
         </div>
+      )}
+      {(isEditing || !isLoading) && (
+        <Button onClick={handleBatchUpdatePrices} disabled={isBatchUpdating} className="mt-4">
+          {isBatchUpdating ? 'Updating Product Prices...' : 'Update All Product Prices'}
+        </Button>
       )}
     </div>
   )

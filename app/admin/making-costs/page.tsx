@@ -10,27 +10,21 @@ import { Badge } from "@/components/ui/badge"
 import { Edit, Save, X, Settings, Calculator } from "lucide-react"
 import { toast } from "sonner"
 import Link from "next/link"
+import type { MakingCost } from '@/lib/making-costs'
 import { getMakingCosts, formatMakingCost, getMetalDisplayName } from "@/lib/making-costs"
-
-interface MakingCost {
-  id: number
-  metal_type: string
-  making_charge_per_gram: number
-  wastage_charge_per_gram: number
-  updated_at: string
-  is_active: boolean
-}
+import { batchUpdateAllProductPrices } from '@/lib/products'
 
 export default function MakingCostsPage() {
   const [costs, setCosts] = useState<MakingCost[]>([])
   const [isEditing, setIsEditing] = useState(false)
   const [editingCosts, setEditingCosts] = useState({
-    gold_22k: { making: 0, wastage: 0 },
-    gold_18k: { making: 0, wastage: 0 },
-    silver: { making: 0, wastage: 0 }
+    gold_22k: { making: 0 },
+    gold_18k: { making: 0 },
+    silver: { making: 0 }
   })
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [isBatchUpdating, setIsBatchUpdating] = useState(false)
   
   const supabase = createClient()
 
@@ -42,20 +36,20 @@ export default function MakingCostsPage() {
     try {
       const costsData = await getMakingCosts()
       setCosts(costsData)
-      
-      // Initialize editing costs with current values
-      const initialCosts = {
-        gold_22k: { 
-          making: costsData.find(c => c.metal_type === 'gold_22k')?.making_charge_per_gram || 0,
-          wastage: costsData.find(c => c.metal_type === 'gold_22k')?.wastage_charge_per_gram || 0
+      // Explicitly type initialCosts
+      const initialCosts: {
+        gold_22k: { making: number },
+        gold_18k: { making: number },
+        silver: { making: number }
+      } = {
+        gold_22k: {
+          making: costsData.find(c => c.metal_type === 'gold_22k')?.making_charge_percent || 0
         },
-        gold_18k: { 
-          making: costsData.find(c => c.metal_type === 'gold_18k')?.making_charge_per_gram || 0,
-          wastage: costsData.find(c => c.metal_type === 'gold_18k')?.wastage_charge_per_gram || 0
+        gold_18k: {
+          making: costsData.find(c => c.metal_type === 'gold_18k')?.making_charge_percent || 0
         },
-        silver: { 
-          making: costsData.find(c => c.metal_type === 'silver')?.making_charge_per_gram || 0,
-          wastage: costsData.find(c => c.metal_type === 'silver')?.wastage_charge_per_gram || 0
+        silver: {
+          making: costsData.find(c => c.metal_type === 'silver')?.making_charge_percent || 0
         }
       }
       setEditingCosts(initialCosts)
@@ -76,16 +70,13 @@ export default function MakingCostsPage() {
     // Reset to current values
     const currentCosts = {
       gold_22k: { 
-        making: costs.find(c => c.metal_type === 'gold_22k')?.making_charge_per_gram || 0,
-        wastage: costs.find(c => c.metal_type === 'gold_22k')?.wastage_charge_per_gram || 0
+        making: costs.find(c => c.metal_type === 'gold_22k')?.making_charge_percent || 0
       },
       gold_18k: { 
-        making: costs.find(c => c.metal_type === 'gold_18k')?.making_charge_per_gram || 0,
-        wastage: costs.find(c => c.metal_type === 'gold_18k')?.wastage_charge_per_gram || 0
+        making: costs.find(c => c.metal_type === 'gold_18k')?.making_charge_percent || 0
       },
       silver: { 
-        making: costs.find(c => c.metal_type === 'silver')?.making_charge_per_gram || 0,
-        wastage: costs.find(c => c.metal_type === 'silver')?.wastage_charge_per_gram || 0
+        making: costs.find(c => c.metal_type === 'silver')?.making_charge_percent || 0
       }
     }
     setEditingCosts(currentCosts)
@@ -103,8 +94,7 @@ export default function MakingCostsPage() {
         supabase
           .from('making_costs')
           .update({ 
-            making_charge_per_gram: costs.making,
-            wastage_charge_per_gram: costs.wastage,
+            making_charge_percent: costs.making,
             updated_at: new Date().toISOString(),
             updated_by: user.id
           })
@@ -122,6 +112,19 @@ export default function MakingCostsPage() {
       toast.error('Failed to update making costs')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleBatchUpdatePrices = async () => {
+    setIsBatchUpdating(true)
+    try {
+      await batchUpdateAllProductPrices()
+      toast.success('All product prices updated based on new making costs!')
+    } catch (err) {
+      toast.error('Failed to update product prices')
+      console.error(err)
+    } finally {
+      setIsBatchUpdating(false)
     }
   }
 
@@ -213,7 +216,7 @@ export default function MakingCostsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor={`making-${cost.metal_type}`}>
-                        Making Charge per gram (₹)
+                        Making Charge (% of metal value)
                       </Label>
                       <Input
                         id={`making-${cost.metal_type}`}
@@ -224,46 +227,20 @@ export default function MakingCostsPage() {
                         onChange={(e) => setEditingCosts(prev => ({
                           ...prev,
                           [cost.metal_type]: {
-                            ...prev[cost.metal_type as keyof typeof prev],
                             making: parseFloat(e.target.value) || 0
                           }
                         }))}
-                        className="text-lg font-semibold"
+                        className="text-lg font-semibold inline-block w-24"
                       />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor={`wastage-${cost.metal_type}`}>
-                        Wastage Charge per gram (₹)
-                      </Label>
-                      <Input
-                        id={`wastage-${cost.metal_type}`}
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={editingCosts[cost.metal_type as keyof typeof editingCosts]?.wastage || 0}
-                        onChange={(e) => setEditingCosts(prev => ({
-                          ...prev,
-                          [cost.metal_type]: {
-                            ...prev[cost.metal_type as keyof typeof prev],
-                            wastage: parseFloat(e.target.value) || 0
-                          }
-                        }))}
-                        className="text-lg font-semibold"
-                      />
+                      <span className="ml-2">%</span>
                     </div>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Making Charge per gram</p>
+                      <p className="text-sm text-gray-600 mb-1">Making Charge (%)</p>
                       <p className="text-2xl font-bold text-gray-900">
-                        {formatMakingCost(cost.making_charge_per_gram)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Wastage Charge per gram</p>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {formatMakingCost(cost.wastage_charge_per_gram)}
+                        {cost.making_charge_percent}%
                       </p>
                     </div>
                   </div>
@@ -295,6 +272,12 @@ export default function MakingCostsPage() {
             </div>
           </div>
         </div>
+      )}
+      {/* After saving costs, show batch update button */}
+      {(!isEditing && !isLoading) && (
+        <Button onClick={handleBatchUpdatePrices} disabled={isBatchUpdating} className="mt-4">
+          {isBatchUpdating ? 'Updating Product Prices...' : 'Update All Product Prices'}
+        </Button>
       )}
     </div>
   )

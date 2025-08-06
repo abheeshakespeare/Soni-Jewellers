@@ -34,57 +34,46 @@ export async function getMetalRateByType(metalType: string): Promise<number> {
 export async function calculateProductPrice(
   weight: number,
   metalType: string,
-  customMakingCharges?: number,
-  customWastageCharges?: number,
+  customMakingPercent?: number,
   includeGst: boolean = true
 ): Promise<{ basePrice: number; gstAmount: number; totalPrice: number }> {
   try {
     // Get metal rate
     const metalRate = await getMetalRateByType(metalType)
-    
     // Get making costs
     const { getMakingCosts } = await import('./making-costs')
     const makingCosts = await getMakingCosts()
     const makingCost = makingCosts.find(c => c.metal_type === metalType)
-    
     // Calculate base metal value
     const metalValue = weight * metalRate
-    
-    // Use custom charges if provided, otherwise use default making costs
-    const makingCharge = customMakingCharges !== undefined 
-      ? weight * customMakingCharges 
-      : weight * (makingCost?.making_charge_per_gram || 0)
-    
-    const wastageCharge = customWastageCharges !== undefined 
-      ? weight * customWastageCharges 
-      : weight * (makingCost?.wastage_charge_per_gram || 0)
-    
-    // Calculate base price (metal value + making charges)
-    const basePrice = metalValue + makingCharge + wastageCharge
-    
+    // Use custom percentage if provided, otherwise use default making cost
+    const makingPercent = customMakingPercent !== undefined 
+      ? customMakingPercent 
+      : (makingCost?.making_charge_percent || 0)
+    // Calculate making charge per gram (as percent of metal rate per gram)
+    const makingChargePerGram = metalRate * (makingPercent / 100)
+    // Calculate total making charge
+    const makingCharge = weight * makingChargePerGram
+    // Calculate GST base as (weight * metalRate) + (weight * makingChargePerGram)
+    const gstBase = metalValue + makingCharge
     // Calculate GST if required
     let gstAmount = 0
-    let totalPrice = basePrice
-    
+    let totalPrice = gstBase
     if (includeGst) {
       const { getGstPercentage, calculateGstAmount } = await import('./gst')
       const gstPercentage = await getGstPercentage()
-      gstAmount = calculateGstAmount(basePrice, gstPercentage)
-      totalPrice = basePrice + gstAmount
+      gstAmount = calculateGstAmount(gstBase, gstPercentage)
+      totalPrice = gstBase + gstAmount
     }
-    
-    return { basePrice, gstAmount, totalPrice }
+    return { basePrice: gstBase, gstAmount, totalPrice }
   } catch (error) {
     console.error('Error calculating product price:', error)
     // Fallback calculation
     const basePrice = weight * 1000 // Placeholder rate
-    const totalCharges = (customMakingCharges || 0) + (customWastageCharges || 0)
-    const fallbackBasePrice = basePrice + totalCharges
-    
     return { 
-      basePrice: fallbackBasePrice, 
+      basePrice: basePrice, 
       gstAmount: 0, 
-      totalPrice: fallbackBasePrice 
+      totalPrice: basePrice 
     }
   }
 }

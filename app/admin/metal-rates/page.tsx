@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Edit, Save, X, DollarSign } from "lucide-react"
 import { toast } from "sonner"
 import Link from "next/link"
+import { batchUpdateAllProductPrices } from '@/lib/products'
 
 interface MetalRate {
   id: number
@@ -29,6 +30,7 @@ export default function MetalRatesPage() {
   })
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [isBatchUpdating, setIsBatchUpdating] = useState(false)
   
   const supabase = createClient()
 
@@ -109,6 +111,19 @@ export default function MetalRatesPage() {
       toast.error('Failed to update metal rates')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleBatchUpdatePrices = async () => {
+    setIsBatchUpdating(true)
+    try {
+      await batchUpdateAllProductPrices()
+      toast.success('All product prices updated based on new metal rates!')
+    } catch (err) {
+      toast.error('Failed to update product prices')
+      console.error(err)
+    } finally {
+      setIsBatchUpdating(false)
     }
   }
 
@@ -253,6 +268,12 @@ export default function MetalRatesPage() {
             Update these rates regularly to ensure accurate pricing for your jewelry items.
           </p>
         </div>
+      )}
+      {/* After saving rates, show batch update button */}
+      {(!isEditing && !isLoading) && (
+        <Button onClick={handleBatchUpdatePrices} disabled={isBatchUpdating} className="mt-4">
+          {isBatchUpdating ? 'Updating Product Prices...' : 'Update All Product Prices'}
+        </Button>
       )}
     </div>
   )

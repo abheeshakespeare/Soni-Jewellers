@@ -3,8 +3,7 @@ import { createClient } from './supabase/client'
 export interface MakingCost {
   id: number
   metal_type: string
-  making_charge_per_gram: number
-  wastage_charge_per_gram: number
+  making_charge_percent: number
   updated_at: string
   is_active: boolean
 }
@@ -34,19 +33,17 @@ export async function getMakingCostByType(metalType: string): Promise<MakingCost
 export function calculateTotalMakingCost(
   weight: number,
   metalType: string,
+  metalRate: number,
   makingCosts: MakingCost[]
-): { makingCharge: number; wastageCharge: number; total: number } {
+): { makingCharge: number; total: number } {
   const cost = makingCosts.find(c => c.metal_type === metalType)
-  
   if (!cost) {
-    return { makingCharge: 0, wastageCharge: 0, total: 0 }
+    return { makingCharge: 0, total: 0 }
   }
-
-  const makingCharge = weight * cost.making_charge_per_gram
-  const wastageCharge = weight * cost.wastage_charge_per_gram
-  const total = makingCharge + wastageCharge
-
-  return { makingCharge, wastageCharge, total }
+  const metalValue = weight * metalRate
+  const makingCharge = metalValue * (cost.making_charge_percent / 100)
+  const total = makingCharge
+  return { makingCharge, total }
 }
 
 export function formatMakingCost(cost: number): string {

@@ -93,10 +93,8 @@ export default function AdminDashboardContent() {
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
-          <p className="text-gray-600 mb-4">Please sign in to access the admin panel.</p>
-          <Link href="/auth">
-            <Button>Sign In</Button>
-          </Link>
+          <p className="text-gray-600 mb-4">Please reload the page to try again.</p>
+          <Button onClick={() => window.location.reload()}>Reload Page</Button>
         </div>
       </div>
     )

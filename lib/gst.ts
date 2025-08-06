@@ -21,7 +21,8 @@ export async function getGstPercentage(): Promise<number> {
     return 18.00 // Default GST percentage
   }
 
-  return data?.gst_percentage || 18.00
+  // Only use 18 if value is null or undefined, not if it's 0
+  return (data?.gst_percentage ?? 0.00)
 }
 
 export async function getGstSettings(): Promise<GstSetting[]> {

@@ -357,3 +357,48 @@ export function getMetalDisplayName(metalType: string, carat?: number, materialC
   }
   return metalType.charAt(0).toUpperCase() + metalType.slice(1)
 } 
+
+/**
+ * Batch update all product prices based on current metal rates and making costs.
+ * Recalculates and updates base_price and final_price for all products except 'other' metal type.
+ */
+export async function batchUpdateAllProductPrices() {
+  const supabase = createClient();
+  // Fetch all products
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('*');
+  if (error) {
+    console.error('Error fetching products for batch update:', error);
+    throw error;
+  }
+  if (!products) return;
+
+  for (const product of products) {
+    if (!product.is_active) continue;
+    let metalTypeForCalculation;
+    if (product.metal_type === 'gold') {
+      metalTypeForCalculation = `gold_${product.carat}k`;
+    } else if (product.metal_type === 'silver') {
+      metalTypeForCalculation = 'silver';
+    } else {
+      // Skip 'other' metal types (manual price)
+      continue;
+    }
+    try {
+      const { basePrice, totalPrice } = await calculateProductPrice(
+        product.weight_grams,
+        metalTypeForCalculation
+      );
+      await supabase
+        .from('products')
+        .update({
+          base_price: basePrice,
+          final_price: totalPrice,
+        })
+        .eq('id', product.id);
+    } catch (err) {
+      console.error(`Failed to update price for product ${product.id}:`, err);
+    }
+  }
+} 
