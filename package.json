@@ -37,7 +37,8 @@
     "@radix-ui/react-toggle": "1.1.1",
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
-    "@supabase/auth-helpers-nextjs": "latest",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "latest",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
@@ -45,7 +46,6 @@
     "cmdk": "1.0.4",
     "date-fns": "^2.30.0",
     "embla-carousel-react": "8.5.1",
-    "firebase": "^12.0.0",
     "framer-motion": "^12.19.1",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
@@ -65,7 +65,6 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@types/firebase": "^2.4.32",
     "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",

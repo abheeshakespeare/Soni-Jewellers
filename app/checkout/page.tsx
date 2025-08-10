@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { formatPrice } from "@/lib/utils"
 import { toast } from "sonner"
-import type { User } from "@supabase/auth-helpers-nextjs"
+import type { User } from "@supabase/supabase-js"
 
 export default function CheckoutPage() {
   const [user, setUser] = useState<User | null>(null)
