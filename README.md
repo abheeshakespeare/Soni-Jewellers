@@ -71,7 +71,7 @@ npm install
     npm run dev
 ```
 
-🔒 Authentication
+##🔒 Authentication
 
 Email/Password login via Supabase
 
@@ -89,14 +89,14 @@ Role-based access control (Customer / Admin)
 
 🛡️ Enhanced security with 2FA
 
-🤝 Contributing
+##🤝 Contributing
 
 Contributions are welcome! Please fork this repository, create a branch, and submit a pull request.
 
-📜 License
+##📜 License
 
 This project is licensed under the MIT License – you’re free to use, modify, and distribute it.
 
-👨‍💻 Author
+##👨‍💻 Author
 
 Developed with ❤️ by Abhishek Kumar Mishra
