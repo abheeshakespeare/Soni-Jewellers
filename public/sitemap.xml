@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Static pages -->
+  <url>
+    <loc>https://www.soninavratnajewellers.in/</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/products</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/cart</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/checkout</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/contact</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/profile</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/orders</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/wishlist</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/stores</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/auth</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/auth/forgot-password</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/auth/reset-password</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/auth/callback</loc>
+  </url>
+  <!-- Admin section (optional, usually not public) -->
+  <!--
+  <url>
+    <loc>https://www.soninavratnajewellers.in/admin</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/admin/products</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/admin/categories</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/admin/gst</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/admin/making-costs</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/admin/metal-rates</loc>
+  </url>
+  -->
+  <!-- Dynamic product pages (example) -->
+  <url>
+    <loc>https://www.soninavratnajewellers.in/products/1</loc>
+  </url>
+  <url>
+    <loc>https://www.soninavratnajewellers.in/products/2</loc>
+  </url>
+  <!-- Add more product URLs dynamically in production -->
+  <!-- Dynamic order pages (example) -->
+  <url>
+    <loc>https://www.soninavratnajewellers.in/orders/12345</loc>
+  </url>
+  <!-- Add more order URLs dynamically in production -->
+</urlset> 
