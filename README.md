@@ -42,6 +42,8 @@ A **premium jewelry e-commerce platform** built with **Next.js 14, Supabase, and
 - npm or yarn  
 - Supabase account  
 
+---
+
 ### 📥 Installation  
 
 1. **Clone the repository**  
@@ -70,6 +72,7 @@ npm install
 ```bash
     npm run dev
 ```
+---
 
 ##🔒 Authentication
 
@@ -89,13 +92,19 @@ Role-based access control (Customer / Admin)
 
 🛡️ Enhanced security with 2FA
 
+---
+
 ##🤝 Contributing
 
 Contributions are welcome! Please fork this repository, create a branch, and submit a pull request.
 
+---
+
 ##📜 License
 
 This project is licensed under the MIT License – you’re free to use, modify, and distribute it.
+
+---
 
 ##👨‍💻 Author
 
