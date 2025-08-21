@@ -48,7 +48,7 @@ A **premium jewelry e-commerce platform** built with **Next.js 14, Supabase, and
 
 1. **Clone the repository**  
 ```bash
-git clone <repository-url>
+git clone <https://github.com/abheeshakespeare/Soni-Jewellers.git>
 cd soni-jewellers
 ```
 2. **Install dependencies**
