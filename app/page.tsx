@@ -46,6 +46,7 @@ export default async function HomePage() {
             src="https://t4.ftcdn.net/jpg/05/27/71/81/360_F_527718147_x7XDK929xZnZqjgh0oPYz7xK0EvtnlIF.jpg"
             alt="Jewelry Collection Background"
             fill
+            sizes="100vw"
             className="object-cover object-center"
             priority
           />

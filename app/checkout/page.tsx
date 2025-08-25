@@ -22,6 +22,10 @@ export default function CheckoutPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isNoticeOpen, setIsNoticeOpen] = useState(false)
+  const [isAuthLoading, setIsAuthLoading] = useState(true)
+  const [deliveryType, setDeliveryType] = useState<"pickup" | "home">(CartManager.getDeliveryPreference().type)
+  const [pincode, setPincode] = useState(CartManager.getDeliveryPreference().pincode || "")
+  const [isDeliverable, setIsDeliverable] = useState<boolean | null>(null)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -36,21 +40,46 @@ export default function CheckoutPage() {
   const supabase = createClient()
 
   useEffect(() => {
-    const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      setUser(user)
+    let isMounted = true
+    const timeoutId = setTimeout(() => {
+      if (isMounted) setIsAuthLoading(false)
+    }, 5000)
 
-      if (user) {
-        setFormData((prev) => ({
-          ...prev,
-          email: user.email || "",
-          name: user.user_metadata?.name || "",
-        }))
+    const getUser = async () => {
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession()
+
+        if (error) {
+          console.error("auth.getSession error:", error)
+        }
+
+        const currentUser = session?.user || null
+        if (!isMounted) return
+
+        setUser(currentUser)
+        if (currentUser) {
+          setFormData((prev) => ({
+            ...prev,
+            email: currentUser.email || "",
+            name: (currentUser as any).user_metadata?.name || "",
+          }))
+        }
+      } catch (err) {
+        console.error("Error getting session:", err)
+      } finally {
+        if (isMounted) setIsAuthLoading(false)
+        clearTimeout(timeoutId)
       }
     }
     getUser()
+
+    return () => {
+      isMounted = false
+      clearTimeout(timeoutId)
+    }
   }, [supabase.auth])
 
   useEffect(() => {
@@ -60,6 +89,25 @@ export default function CheckoutPage() {
   const subtotal = CartManager.getCartTotal()
   const advanceAmount = subtotal * 0.25 // 25% advance
   const remainingAmount = subtotal * 0.75 // 75% remaining
+
+  const allowedPincodes = new Set(["829206", "829207"]) 
+
+  const handlePincodeChange = (value: string) => {
+    const cleaned = value.replace(/[^0-9]/g, "")
+    setPincode(cleaned)
+    if (cleaned.length === 6) {
+      setIsDeliverable(allowedPincodes.has(cleaned))
+    } else {
+      setIsDeliverable(null)
+    }
+  }
+
+  useEffect(() => {
+    // initialize deliverable state based on stored pincode
+    if (pincode && pincode.length === 6) {
+      setIsDeliverable(allowedPincodes.has(pincode))
+    }
+  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -78,6 +126,13 @@ export default function CheckoutPage() {
     if (cartItems.length === 0) {
       toast.error("Your cart is empty")
       return
+    }
+
+    if (deliveryType === "home") {
+      if (pincode.length !== 6 || isDeliverable !== true) {
+        toast.error("Please enter a valid deliverable pincode")
+        return
+      }
     }
 
     // NOTE: Online order booking/payment is not yet enabled.
@@ -100,6 +155,12 @@ export default function CheckoutPage() {
           productSizeDetails: formData.productSizeDetails,
           aadhar: formData.aadhar,
           address: formData.address,
+          // Persist delivery choice for admin visibility
+          delivery_type: deliveryType, // "pickup" | "home"
+          delivery_address: deliveryType === "home" ? { pincode } : null,
+          subtotal,
+          advance_paid: advanceAmount,
+          remaining: remainingAmount,
         }),
       })
 
@@ -119,6 +180,17 @@ export default function CheckoutPage() {
       setIsLoading(false)
     }
     */
+  }
+
+  if (isAuthLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-amber-800 mb-2">Loading...</h2>
+          <p className="text-amber-600">Checking your session</p>
+        </div>
+      </div>
+    )
   }
 
   if (!user) {
@@ -263,18 +335,34 @@ export default function CheckoutPage() {
                 <CardTitle className="text-amber-800">Delivery Option</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <input type="radio" checked readOnly />
-                  <span>Store Pickup (Free)</span>
-                </div>
-                <div className="bg-amber-50 border border-amber-200 rounded p-3 text-sm text-gray-700">
-                  <b>Store Address:</b><br/>
-                  Soni Jewellers and Navratna Bhandar,<br/>
-                  Opp. V-Mart,<br/>
-                  Main Road,<br/>
-                  Latehar,Jharkhand,829206,<br/>
-                  India<br/>
-                  Phone: +91-9263879884
+                <div className="space-y-3">
+                  <div className="text-sm text-gray-700">
+                    <span className="font-medium">Selected:</span>{" "}
+                    {deliveryType === "pickup" ? "Store Pickup (Free)" : `Home Delivery${pincode ? ` - Pincode: ${pincode}` : ""}`}
+                  </div>
+                  {deliveryType === "home" && (
+                    <div className="space-y-2">
+                      {isDeliverable === true && (
+                        <div className="text-green-700 bg-green-50 border border-green-200 rounded p-2 text-sm">Deliverable to this address.</div>
+                      )}
+                      {isDeliverable === false && (
+                        <div className="text-red-700 bg-red-50 border border-red-200 rounded p-2 text-sm">Not deliverable to this address.</div>
+                      )}
+                      {isDeliverable === null && pincode.length > 0 && (
+                        <div className="text-gray-600 text-sm">Please enter a valid 6-digit pincode.</div>
+                      )}
+                      <div className="text-xs text-gray-500">Supported pincodes: 829206, 829207</div>
+                    </div>
+                  )}
+                  <div className="bg-amber-50 border border-amber-200 rounded p-3 text-sm text-gray-700">
+                    <b>Store Address:</b><br/>
+                    Soni Jewellers and Navratna Bhandar,<br/>
+                    Opp. V-Mart,<br/>
+                    Main Road,<br/>
+                    Latehar,Jharkhand,829206,<br/>
+                    India<br/>
+                    Phone: +91-9263879884
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -296,8 +384,19 @@ export default function CheckoutPage() {
               </CardContent>
             </Card>
 
-            <Button type="submit" size="lg" className="w-full bg-yellow-600 hover:bg-yellow-700" disabled={isLoading}>
-              {isLoading ? "Placing Order..." : `Place Order - ${formatPrice(advanceAmount)} Advance`}
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full bg-yellow-600 hover:bg-yellow-700"
+              disabled={
+                isLoading || (deliveryType === "home" && (pincode.length !== 6 || isDeliverable !== true))
+              }
+            >
+              {isLoading
+                ? "Placing Order..."
+                : deliveryType === "home" && (pincode.length !== 6 || isDeliverable !== true)
+                  ? "Enter valid pincode for home delivery"
+                  : `Place Order - ${formatPrice(advanceAmount)} Advance`}
             </Button>
 
             <p className="text-xs text-gray-500 text-center">

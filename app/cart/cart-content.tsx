@@ -5,6 +5,7 @@ import { CartManager, type CartItem } from "@/lib/cart"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
 import { formatPrice } from "@/lib/utils"
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react"
 import Image from "next/image"
@@ -15,8 +16,10 @@ export default function CartContent() {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [specialInstructions, setSpecialInstructions] = useState("")
   const [productSizeDetails, setProductSizeDetails] = useState("")
-  // Only one delivery type
-  const deliveryType = "pickup"
+  // Delivery selection and pincode validation for home delivery
+  const [deliveryType, setDeliveryType] = useState<"pickup" | "home">(CartManager.getDeliveryPreference().type)
+  const [pincode, setPincode] = useState(CartManager.getDeliveryPreference().pincode || "")
+  const [isDeliverable, setIsDeliverable] = useState<boolean | null>(null)
 
   useEffect(() => {
     const updateCart = () => {
@@ -53,6 +56,26 @@ export default function CartContent() {
   const subtotal = CartManager.getCartTotal()
   const advanceAmount = subtotal * 0.25 // 25% advance
   const remainingAmount = subtotal * 0.75 // 75% remaining
+
+  const allowedPincodes = new Set(["829206", "829207"]) 
+
+  const handlePincodeChange = (value: string) => {
+    const cleaned = value.replace(/[^0-9]/g, "")
+    setPincode(cleaned)
+    if (cleaned.length === 6) {
+      setIsDeliverable(allowedPincodes.has(cleaned))
+    } else {
+      setIsDeliverable(null)
+    }
+    CartManager.setDeliveryPreference({ type: "home", pincode: cleaned })
+  }
+
+  useEffect(() => {
+    // initialize deliverable state based on stored pincode
+    if (pincode && pincode.length === 6) {
+      setIsDeliverable(allowedPincodes.has(pincode))
+    }
+  }, [])
 
   if (cartItems.length === 0) {
     return (
@@ -235,12 +258,49 @@ export default function CartContent() {
                     type="radio"
                     name="delivery"
                     value="pickup"
-                    checked
-                    readOnly
+                    checked={deliveryType === "pickup"}
+                    onChange={() => { setDeliveryType("pickup"); setIsDeliverable(null); CartManager.setDeliveryPreference({ type: "pickup" }) }}
                     className="w-4 h-4 text-yellow-600"
                   />
                   <span className="font-medium">Store Pickup (Free)</span>
                 </label>
+
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="delivery"
+                    value="home"
+                    checked={deliveryType === "home"}
+                    onChange={() => { setDeliveryType("home"); CartManager.setDeliveryPreference({ type: "home", pincode }) }}
+                    className="w-4 h-4 text-yellow-600"
+                  />
+                  <span className="font-medium">Home Delivery</span>
+                </label>
+
+                {deliveryType === "home" && (
+                  <div className="space-y-2">
+                    <label htmlFor="pincode" className="block text-sm text-gray-700">Enter Delivery Pincode</label>
+                    <Input
+                      id="pincode"
+                      value={pincode}
+                      onChange={(e) => handlePincodeChange(e.target.value)}
+                      placeholder="6-digit pincode"
+                      inputMode="numeric"
+                      maxLength={6}
+                    />
+                    {isDeliverable === true && (
+                      <div className="text-green-700 bg-green-50 border border-green-200 rounded p-2 text-sm">Deliverable to this address.</div>
+                    )}
+                    {isDeliverable === false && (
+                      <div className="text-red-700 bg-red-50 border border-red-200 rounded p-2 text-sm">Not deliverable to this address.</div>
+                    )}
+                    {isDeliverable === null && pincode.length > 0 && (
+                      <div className="text-gray-600 text-sm">Please enter a valid 6-digit pincode.</div>
+                    )}
+                    <div className="text-xs text-gray-500">Currently supported pincodes: 829206, 829207</div>
+                  </div>
+                )}
+
                 <div className="bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-lg p-4 text-sm">
                   <div className="font-semibold text-amber-800 mb-2">📍 Store Address:</div>
                   <div className="text-gray-700 leading-relaxed">
@@ -261,8 +321,9 @@ export default function CartContent() {
             <Button 
               size="lg" 
               className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              disabled={deliveryType === "home" && isDeliverable !== true}
             >
-              Proceed to Checkout →
+              {deliveryType === "home" && isDeliverable !== true ? "Enter valid pincode for home delivery" : "Proceed to Checkout →"}
             </Button>
           </Link>
         </div>
