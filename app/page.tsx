@@ -5,6 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Crown, Sparkles, Shield, Truck, Star, ArrowRight, Heart, Gem, Award } from "lucide-react"
 import TestimonialsCarousel from "@/components/testimonials-carousel"
+import { getBanner } from "@/lib/banner"
 
 const CATEGORY_IMAGES: Record<string, string> = {
   "Ring": "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dwcfbf242b/images/hi-res/511099FHGAA00.jpg?sw=640&sh=640",
@@ -31,6 +32,9 @@ export default async function HomePage() {
 
   // Fetch categories
   const { data: categories } = await supabase.from("categories").select("*").limit(6)
+
+  // Fetch banner
+  const bannerUrl = await getBanner()
 
   return (
     <div className="min-h-screen">
@@ -100,6 +104,7 @@ export default async function HomePage() {
                 </a>
               </div>
               
+              
               {/* Stats */}
               <div className="flex items-center justify-center lg:justify-start gap-4 sm:gap-8 mt-8 md:mt-12 pt-6 md:pt-8 border-t border-white/20">
                 <div className="text-center lg:text-left">
@@ -124,6 +129,27 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Banner Section */}
+      {bannerUrl && (
+        <section className="w-full py-4 md:py-8 bg-gradient-to-r from-yellow-50 to-orange-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative w-full overflow-hidden rounded-lg md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <Image
+                src={bannerUrl}
+                alt="Promotional Banner"
+                width={1200}
+                height={400}
+                className="w-full h-auto object-cover object-center"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+                priority
+              />
+              {/* Optional overlay for better interaction */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-yellow-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-lg md:rounded-2xl"></div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Features Section - Hidden on Mobile */}
       <section className="py-20 bg-white hidden md:block">

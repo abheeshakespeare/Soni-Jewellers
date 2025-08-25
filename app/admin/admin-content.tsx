@@ -177,6 +177,9 @@ export default function AdminDashboardContent() {
             <TabsTrigger value="contacts" className="min-w-[120px] px-4 py-2 rounded-lg font-bold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:bg-white/80 data-[state=inactive]:text-amber-700 data-[state=inactive]:border data-[state=inactive]:border-amber-200">
               Contacts
             </TabsTrigger>
+            <TabsTrigger value="Banner" className="min-w-[120px] px-4 py-2 rounded-lg font-bold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:bg-white/80 data-[state=inactive]:text-amber-700 data-[state=inactive]:border data-[state=inactive]:border-amber-200">
+              Banner
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="products" className="space-y-6">
@@ -313,6 +316,17 @@ export default function AdminDashboardContent() {
             <Card className="rounded-xl shadow-lg border-amber-200/50">
               <CardContent className="p-6">
                 <ContactsAdminPanel />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="Banner" className="space-y-6">
+            <div className="bg-gradient-to-r from-amber-100 to-yellow-100 rounded-xl p-6 shadow mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 bg-clip-text text-transparent">Banner Management</h2>
+            </div>
+            <Card className="rounded-xl shadow-lg border-amber-200/50">
+              <CardContent className="p-6">
+                <BannerAdminPanel />
               </CardContent>
             </Card>
           </TabsContent>
@@ -632,6 +646,153 @@ function AdminOrdersPanel() {
           </Table>
         </div>
       )}
+    </div>
+  )
+} 
+
+function BannerAdminPanel() {
+  const [bannerUrl, setBannerUrl] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [currentBanner, setCurrentBanner] = useState<string>("")
+  const [message, setMessage] = useState("")
+
+  useEffect(() => {
+    fetchCurrentBanner()
+  }, [])
+
+  const fetchCurrentBanner = async () => {
+    try {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from("banners")
+        .select("banner_url")
+        .single()
+      
+      if (!error && data) {
+        setCurrentBanner(data.banner_url)
+        setBannerUrl(data.banner_url)
+      }
+    } catch (error) {
+      console.error("Error fetching banner:", error)
+    }
+  }
+
+  const handleUpdateBanner = async () => {
+    if (!bannerUrl.trim()) {
+      setMessage("Please enter a valid banner URL")
+      return
+    }
+
+    setLoading(true)
+    setMessage("")
+
+    try {
+      const supabase = createClient()
+      
+      // Check if banner exists, if not create, if yes update
+      const { data: existingBanner } = await supabase
+        .from("banners")
+        .select("id")
+        .single()
+
+      if (existingBanner) {
+        // Update existing banner
+        const { error } = await supabase
+          .from("banners")
+          .update({ banner_url: bannerUrl.trim() })
+          .eq("id", existingBanner.id)
+
+        if (error) throw error
+      } else {
+        // Create new banner
+        const { error } = await supabase
+          .from("banners")
+          .insert({ banner_url: bannerUrl.trim() })
+
+        if (error) throw error
+      }
+
+      setCurrentBanner(bannerUrl.trim())
+      setMessage("Banner updated successfully!")
+      
+      // Clear message after 3 seconds
+      setTimeout(() => setMessage(""), 3000)
+    } catch (error) {
+      console.error("Error updating banner:", error)
+      setMessage("Error updating banner. Please try again.")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg p-6 border border-amber-200">
+        <h3 className="text-xl font-semibold text-amber-800 mb-4">Current Banner</h3>
+        {currentBanner ? (
+          <div className="space-y-3">
+            <div className="text-sm text-gray-600">Current Banner URL:</div>
+            <div className="bg-white p-3 rounded border break-all text-sm font-mono text-amber-700">
+              {currentBanner}
+            </div>
+            <div className="text-sm text-gray-500">
+              This banner is currently displayed on the homepage.
+            </div>
+          </div>
+        ) : (
+          <div className="text-amber-600 italic">No banner is currently set.</div>
+        )}
+      </div>
+
+      <div className="bg-white rounded-lg p-6 border border-amber-200">
+        <h3 className="text-xl font-semibold text-amber-800 mb-4">Update Banner</h3>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="bannerUrl" className="block text-sm font-medium text-gray-700 mb-2">
+              Banner Image URL
+            </label>
+            <input
+              id="bannerUrl"
+              type="url"
+              value={bannerUrl}
+              onChange={(e) => setBannerUrl(e.target.value)}
+              placeholder="https://example.com/banner-image.jpg"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Enter the URL of the banner image you want to display on the homepage.
+            </p>
+          </div>
+
+          {message && (
+            <div className={`p-3 rounded-md text-sm ${
+              message.includes("Error") 
+                ? "bg-red-100 text-red-700 border border-red-200" 
+                : "bg-green-100 text-green-700 border border-green-200"
+            }`}>
+              {message}
+            </div>
+          )}
+
+          <Button
+            onClick={handleUpdateBanner}
+            disabled={loading || !bannerUrl.trim()}
+            className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold shadow-md hover:from-amber-600 hover:to-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? "Updating..." : "Update Banner"}
+          </Button>
+        </div>
+      </div>
+
+      <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+        <h4 className="font-medium text-blue-800 mb-2">💡 Tips</h4>
+        <ul className="text-sm text-blue-700 space-y-1">
+          <li>• Use high-quality images with recommended dimensions: 1200x400 pixels</li>
+          <li>• Ensure the image URL is publicly accessible</li>
+          <li>• Supported formats: JPG, PNG, WebP</li>
+          <li>• The banner will be automatically displayed on the homepage</li>
+        </ul>
+      </div>
     </div>
   )
 } 
