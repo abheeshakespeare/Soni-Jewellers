@@ -1,6 +1,6 @@
 # 💎 Soni Jewellers & Navratna Bhandar  
 
-A **premium jewelry e-commerce platform** built with **Next.js 14, Supabase, and Tailwind CSS**, offering a seamless online shopping experience for customers and a powerful admin dashboard for store management.  
+A **premium jewellery e-commerce platform** built with **Next.js 14, Supabase, and Tailwind CSS**, offering a seamless online shopping experience for customers and a powerful admin dashboard for store management.  
 
 ---
 
@@ -8,7 +8,7 @@ A **premium jewelry e-commerce platform** built with **Next.js 14, Supabase, and
 
 ### 🛒 Customer Features
 - 🔐 **Authentication** with Supabase (Email/Password + Google OAuth)  
-- 👑 Browse **premium jewelry catalog** with search & filtering  
+- 👑 Browse **premium jewellery catalog** with search & filtering  
 - ⭐ **Wishlist functionality** for favorite items  
 - 🛍️ **Shopping cart** with localStorage persistence  
 - 💰 **Dynamic pricing** based on live metal rates  
