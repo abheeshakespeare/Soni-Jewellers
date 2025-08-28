@@ -9,6 +9,8 @@ import { Toaster } from "sonner"
 import Navbar from "@/components/ui/navbar"
 import Footer from "@/components/ui/footer"
 import { WishlistProvider } from "@/contexts/wishlist-context"
+import WhatsAppButton from "@/app/whatsapp/WhatsAppButton"
+
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -96,6 +98,7 @@ export default function RootLayout({
             }}
             className="toaster"
           />
+          <WhatsAppButton/>
         </WishlistProvider>
       </body>
     </html>

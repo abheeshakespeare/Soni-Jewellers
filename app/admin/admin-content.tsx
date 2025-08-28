@@ -666,7 +666,7 @@ function BannerAdminPanel() {
       const { data, error } = await supabase
         .from("banners")
         .select("banner_url")
-        .single()
+        .maybeSingle()
       
       if (!error && data) {
         setCurrentBanner(data.banner_url)
@@ -693,7 +693,7 @@ function BannerAdminPanel() {
       const { data: existingBanner } = await supabase
         .from("banners")
         .select("id")
-        .single()
+        .maybeSingle()
 
       if (existingBanner) {
         // Update existing banner
