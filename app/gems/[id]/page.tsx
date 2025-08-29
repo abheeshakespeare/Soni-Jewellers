@@ -6,13 +6,12 @@ import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, Phone, Mail, MessageCircle, Star, Gem, Crown, Sparkles } from "lucide-react"
+import { ArrowLeft, Star, Gem, Crown, Sparkles, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import { formatPrice } from "@/lib/utils"
 import { toast } from "sonner"
+import OrderNoticeModal from "@/app/notice/gemcontact"
 
 interface Gem {
   id: string
@@ -39,14 +38,7 @@ export default function GemDetailPage() {
   
   const [gem, setGem] = useState<Gem | null>(null)
   const [loading, setLoading] = useState(true)
-  const [showContactForm, setShowContactForm] = useState(false)
-  const [contactForm, setContactForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: ""
-  })
-  const [submitting, setSubmitting] = useState(false)
+  const [showContactModal, setShowContactModal] = useState(false)
 
   useEffect(() => {
     if (gemId) {
@@ -71,33 +63,6 @@ export default function GemDetailPage() {
       toast.error("Gem not found or not available")
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!contactForm.name || !contactForm.email || !contactForm.message) {
-      toast.error("Please fill in all required fields")
-      return
-    }
-
-    setSubmitting(true)
-
-    try {
-      // Here you would typically send the contact form to your backend
-      // For now, we'll just show a success message
-      toast.success("Your message has been sent! We'll contact you soon.")
-      setShowContactForm(false)
-      setContactForm({ name: "", email: "", phone: "", message: "" })
-      
-      // You can implement actual contact form submission here
-      // Example: Send to your API endpoint or email service
-    } catch (error) {
-      console.error("Error sending message:", error)
-      toast.error("Failed to send message. Please try again.")
-    } finally {
-      setSubmitting(false)
     }
   }
 
@@ -220,87 +185,17 @@ export default function GemDetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {!showContactForm ? (
-                  <div className="space-y-4">
-                    <p className="text-gray-600">
-                      Interested in this gemstone? Contact the owner to discuss details, 
-                      pricing, and availability.
-                    </p>
-                    <Button 
-                      onClick={() => setShowContactForm(true)}
-                      className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold hover:from-amber-600 hover:to-yellow-600"
-                    >
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      Contact Owner
-                    </Button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-4">
-                    <div>
-                      <Label htmlFor="name">Name *</Label>
-                      <Input
-                        id="name"
-                        value={contactForm.name}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
-                        placeholder="Your full name"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="email">Email *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={contactForm.email}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
-                        placeholder="your.email@example.com"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="phone">Phone (Optional)</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        value={contactForm.phone}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
-                        placeholder="+91 98765 43210"
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="message">Message *</Label>
-                      <Textarea
-                        id="message"
-                        value={contactForm.message}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
-                        placeholder="Tell us about your interest in this gemstone..."
-                        rows={4}
-                        required
-                      />
-                    </div>
-                    
-                    <div className="flex gap-3">
-                      <Button
-                        type="submit"
-                        disabled={submitting}
-                        className="flex-1 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold hover:from-amber-600 hover:to-yellow-600"
-                      >
-                        {submitting ? "Sending..." : "Send Message"}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setShowContactForm(false)}
-                        disabled={submitting}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </form>
-                )}
+                <p className="text-gray-600 mb-4">
+                  Interested in this gemstone? Contact the owner to discuss details, 
+                  pricing, and availability.
+                </p>
+                <Button 
+                  onClick={() => setShowContactModal(true)}
+                  className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold hover:from-amber-600 hover:to-yellow-600"
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Contact Owner
+                </Button>
               </CardContent>
             </Card>
 
@@ -327,6 +222,14 @@ export default function GemDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Contact Modal */}
+      {showContactModal && (
+        <OrderNoticeModal 
+          open={showContactModal} 
+          onClose={() => setShowContactModal(false)} 
+        />
+      )}
     </div>
   )
 }
