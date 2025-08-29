@@ -82,7 +82,7 @@ export default async function OrdersPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-amber-800 mb-3">My Orders</h1>
-          <p className="text-amber-600 text-lg">View your jewelry purchase history and track current orders</p>
+          <p className="text-amber-600 text-lg">View your jewellery purchase history and track current orders</p>
         </div>
         <div className="space-y-6">
           {orders.map((order) => (

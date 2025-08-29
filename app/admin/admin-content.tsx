@@ -159,6 +159,11 @@ export default function AdminDashboardContent() {
             <TabsTrigger value="products" className="min-w-[120px] px-4 py-2 rounded-lg font-bold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:bg-white/80 data-[state=inactive]:text-amber-700 data-[state=inactive]:border data-[state=inactive]:border-amber-200">
               Products
             </TabsTrigger>
+
+            <TabsTrigger value="gemstones" className="min-w-[120px] px-4 py-2 rounded-lg font-bold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:bg-white/80 data-[state=inactive]:text-amber-700 data-[state=inactive]:border data-[state=inactive]:border-amber-200">
+              Gemstones
+            </TabsTrigger>
+            
             <TabsTrigger value="orders" className="min-w-[120px] px-4 py-2 rounded-lg font-bold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:bg-white/80 data-[state=inactive]:text-amber-700 data-[state=inactive]:border data-[state=inactive]:border-amber-200">
               Orders
             </TabsTrigger>
@@ -180,6 +185,7 @@ export default function AdminDashboardContent() {
             <TabsTrigger value="Banner" className="min-w-[120px] px-4 py-2 rounded-lg font-bold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=inactive]:bg-white/80 data-[state=inactive]:text-amber-700 data-[state=inactive]:border data-[state=inactive]:border-amber-200">
               Banner
             </TabsTrigger>
+            
           </TabsList>
 
           <TabsContent value="products" className="space-y-6">
@@ -206,6 +212,33 @@ export default function AdminDashboardContent() {
                   </Link>
                   <Link href="/admin/products/new">
                     <Button variant="outline" className="rounded-lg">Add New Product</Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="gemstones" className="space-y-6">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 bg-gradient-to-r from-amber-100 to-yellow-100 rounded-xl p-6 shadow mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 bg-clip-text text-transparent">Gemstones Management</h2>
+              <Link href="/admin/gems/new">
+                <Button className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold shadow-md hover:from-amber-600 hover:to-yellow-600">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Gemstone
+                </Button>
+              </Link>
+            </div>
+            <Card className="rounded-xl shadow-lg border-amber-200/50">
+              <CardContent className="p-6">
+                <p className="text-gray-600">
+                  Manage your gemstone catalog, add new gems, update existing gemstones, and control their visibility.
+                </p>
+                <div className="mt-4 flex flex-col md:flex-row gap-3">
+                  <Link href="/admin/gems">
+                    <Button variant="outline" className="rounded-lg">View All Gemstones</Button>
+                  </Link>
+                  <Link href="/admin/gems/new">
+                    <Button variant="outline" className="rounded-lg">Add New Gemstone</Button>
                   </Link>
                 </div>
               </CardContent>
