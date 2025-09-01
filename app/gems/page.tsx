@@ -323,29 +323,34 @@ export default function GemsPage() {
                       
                       {/* Weight and Measurement - Better Layout */}
                       <div className="bg-gray-50 rounded-lg p-3 mb-3">
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                          <div>
-                            <span className="text-gray-500 block">Weight</span>
-                            <span className="font-semibold text-gray-900">
-                                {gem.gem_weight}
-                            </span>
-                            <div className="text-sm font-medium text-gray-500">
-                              {gem.measurement}
-                            </div>
+  <div className="grid grid-cols-2 gap-2 text-xs">
+    <div>
+      <span className="text-gray-500 block">Weight</span>
+      <span className="font-semibold text-gray-900">
+        {gem.gem_weight}
+      </span>
+    </div>
+    <div>
+      <span className="text-gray-500 block">Cut</span>
+      <span className="font-semibold text-gray-900">{gem.gem_cut}</span>
+    </div>
+  </div>
 
-                          </div>
-                          <div>
-                            <span className="text-gray-500 block">Cut</span>
-                            <span className="font-semibold text-gray-900">{gem.gem_cut}</span>
-                          </div>
-                        </div>
-                        {gem.gem_color && (
-                          <div className="mt-2 text-xs">
-                            <span className="text-gray-500">Color: </span>
-                            <span className="font-semibold text-gray-900">{gem.gem_color}</span>
-                          </div>
-                        )}
-                      </div>
+  {gem.gem_color && (
+    <div className="mt-2 text-xs">
+      <span className="text-gray-500">Color: </span>
+      <span className="font-semibold text-gray-900">{gem.gem_color}</span>
+    </div>
+  )}
+
+  {gem.measurement && (
+    <div className="mt-2 text-xs">
+      <span className="text-gray-500">Measurement: </span>
+      <span className="font-semibold text-gray-900">{gem.measurement}</span>
+    </div>
+  )}
+</div>
+
                       
                       <div className="flex items-center justify-between">
                         <div>
