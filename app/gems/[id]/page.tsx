@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Label } from "@/components/ui/label"
-import { ArrowLeft, Star, Gem, Crown, Sparkles, MessageCircle, Scale, Scissors, Palette, Award, Shield, Eye, ChevronRight } from "lucide-react"
+import { ArrowLeft, Star, Gem, Crown, Sparkles, MessageCircle, Scale, Scissors, Palette, Award, Shield, Eye, ChevronRight, Ruler } from "lucide-react"
 import Link from "next/link"
 import { formatPrice } from "@/lib/utils"
 import { toast } from "sonner"
@@ -249,7 +249,6 @@ export default function GemDetailPage() {
         <Label className="text-sm text-gray-600 font-medium">Total Weight</Label>
         <div className="text-xl font-bold text-gray-900">
   <div>{gem.gem_weight}</div>
-  <div className="text-sm font-medium text-gray-500">{gem.measurement}</div>
 </div>
       </div>
     </div>
@@ -276,11 +275,11 @@ export default function GemDetailPage() {
 
     <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
       <div className="bg-green-100 p-3 rounded-full">
-        <Award className="h-6 w-6 text-green-600" />
+        <Ruler className="h-6 w-6 text-green-600" />
       </div>
       <div>
-        <Label className="text-sm text-gray-600 font-medium">Origin Type</Label>
-        <div className="text-xl font-bold text-gray-900">{gem.gem_type}</div>
+        <Label className="text-sm text-gray-600 font-medium">Measurement</Label>
+        <div className="text-xl font-bold text-gray-900">{gem.measurement}</div>
       </div>
     </div>
   </div>
