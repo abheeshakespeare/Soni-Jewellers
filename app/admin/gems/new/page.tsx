@@ -30,7 +30,7 @@ export default function NewGemPage() {
     measurement: "",
     rate_per_cts: "",
     mrp: "",
-    is_public: false
+    is_public: true
   })
 
   const gemCategories = [
@@ -67,6 +67,7 @@ export default function NewGemPage() {
     }
 
     setLoading(true)
+    const timeout = setTimeout(() => setLoading(false), 15000)
 
     try {
       const { error } = await supabase
@@ -94,6 +95,7 @@ export default function NewGemPage() {
       console.error("Error adding gem:", error)
       toast.error("Failed to add gem. Please try again.")
     } finally {
+      clearTimeout(timeout)
       setLoading(false)
     }
   }
