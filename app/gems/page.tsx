@@ -65,8 +65,7 @@ export default function GemsPage() {
   const [categoryFilter, setCategoryFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
   const [sortBy, setSortBy] = useState("newest")
-
-  const supabase = createClient()
+  const [retryCount, setRetryCount] = useState(0)
 
   useEffect(() => {
     fetchGems()
@@ -77,9 +76,26 @@ export default function GemsPage() {
       setLoading(true)
       setError(null)
       
-      // Add timeout to prevent infinite loading
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Request timeout')), 10000)
+      console.log('Starting to fetch gems...')
+      
+      const supabase = createClient()
+      
+      // Test connection first
+      const { data: testData, error: testError } = await supabase
+        .from("gems")
+        .select("count")
+        .limit(1)
+      
+      if (testError) {
+        console.error('Connection test failed:', testError)
+        throw new Error(`Database connection failed: ${testError.message}`)
+      }
+      
+      console.log('Connection test passed, fetching gems...')
+      
+      // Add timeout with proper Promise.race handling
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Request timeout after 15 seconds')), 15000)
       )
       
       const fetchPromise = supabase
@@ -87,19 +103,35 @@ export default function GemsPage() {
         .select("*")
         .eq("is_public", true)
         .order("created_at", { ascending: false })
+        .then(result => {
+          console.log('Supabase query result:', result)
+          return result
+        })
 
-      const { data, error } = await Promise.race([fetchPromise, timeoutPromise]) as any
+      const { data, error } = await Promise.race([fetchPromise, timeoutPromise])
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase error:', error)
+        throw new Error(`Failed to fetch gems: ${error.message}`)
+      }
+      
+      console.log('Fetched gems:', data?.length || 0)
       setGems(data || [])
+      setRetryCount(0) // Reset retry count on success
+      
     } catch (error: any) {
       console.error("Error fetching gems:", error)
       setError(error.message || "Failed to load gems")
-      // Set empty array to show category grid
-      setGems([])
+      setGems([]) // Ensure gems is empty on error
     } finally {
       setLoading(false)
+      console.log('Fetch gems completed, loading set to false')
     }
+  }
+
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1)
+    fetchGems()
   }
 
   const filteredGems = gems.filter((gem) => {
@@ -130,6 +162,15 @@ export default function GemsPage() {
       default:
         return 0
     }
+  })
+
+  // Debug logging
+  console.log('Component render state:', { 
+    loading, 
+    error: !!error, 
+    gemsCount: gems.length, 
+    filteredGemsCount: filteredGems.length,
+    retryCount 
   })
 
   return (
@@ -254,19 +295,31 @@ export default function GemsPage() {
             </div>
           </div>
 
+          {/* Debug Info (remove in production) */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="mb-4 p-4 bg-blue-50 rounded-lg text-sm">
+              <strong>Debug:</strong> Loading: {loading.toString()}, Error: {error ? 'Yes' : 'No'}, 
+              Gems: {gems.length}, Filtered: {filteredGems.length}, Retry: {retryCount}
+            </div>
+          )}
+
           {/* Error State */}
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-8">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-red-800 mb-2">Failed to Load Gems</h3>
-                  <p className="text-red-600">{error}</p>
+                  <p className="text-red-600 mb-2">{error}</p>
+                  {retryCount > 0 && (
+                    <p className="text-red-500 text-sm">Retry attempt: {retryCount}</p>
+                  )}
                 </div>
                 <button
-                  onClick={fetchGems}
-                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                  onClick={handleRetry}
+                  disabled={loading}
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
                 >
-                  Retry
+                  {loading ? 'Retrying...' : 'Retry'}
                 </button>
               </div>
             </div>
@@ -277,12 +330,14 @@ export default function GemsPage() {
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
               <div className="text-amber-600 text-lg">Loading gems...</div>
-              <div className="text-gray-500 text-sm mt-2">This may take a few moments</div>
+              <div className="text-gray-500 text-sm mt-2">
+                {retryCount > 0 ? `Retry attempt ${retryCount}...` : 'This may take a few moments'}
+              </div>
             </div>
           )}
 
           {/* Gems Grid */}
-          {!loading && sortedGems.length > 0 && (
+          {!loading && !error && sortedGems.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
               {sortedGems.map((gem) => (
                 <Link key={gem.id} href={`/gems/${gem.id}`} className="group">
@@ -321,36 +376,35 @@ export default function GemsPage() {
                         </h3>
                       </div>
                       
-                      {/* Weight and Measurement - Better Layout */}
+                      {/* Weight and Measurement */}
                       <div className="bg-gray-50 rounded-lg p-3 mb-3">
-  <div className="grid grid-cols-2 gap-2 text-xs">
-    <div>
-      <span className="text-gray-500 block">Weight</span>
-      <span className="font-semibold text-gray-900">
-        {gem.gem_weight}
-      </span>
-    </div>
-    <div>
-      <span className="text-gray-500 block">Cut</span>
-      <span className="font-semibold text-gray-900">{gem.gem_cut}</span>
-    </div>
-  </div>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <span className="text-gray-500 block">Weight</span>
+                            <span className="font-semibold text-gray-900">
+                              {gem.gem_weight}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500 block">Cut</span>
+                            <span className="font-semibold text-gray-900">{gem.gem_cut}</span>
+                          </div>
+                        </div>
 
-  {gem.gem_color && (
-    <div className="mt-2 text-xs">
-      <span className="text-gray-500">Color: </span>
-      <span className="font-semibold text-gray-900">{gem.gem_color}</span>
-    </div>
-  )}
+                        {gem.gem_color && (
+                          <div className="mt-2 text-xs">
+                            <span className="text-gray-500">Color: </span>
+                            <span className="font-semibold text-gray-900">{gem.gem_color}</span>
+                          </div>
+                        )}
 
-  {gem.measurement && (
-    <div className="mt-2 text-xs">
-      <span className="text-gray-500">Measurement: </span>
-      <span className="font-semibold text-gray-900">{gem.measurement}</span>
-    </div>
-  )}
-</div>
-
+                        {gem.measurement && (
+                          <div className="mt-2 text-xs">
+                            <span className="text-gray-500">Measurement: </span>
+                            <span className="font-semibold text-gray-900">{gem.measurement}</span>
+                          </div>
+                        )}
+                      </div>
                       
                       <div className="flex items-center justify-between">
                         <div>
@@ -389,6 +443,21 @@ export default function GemsPage() {
                 className="bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-amber-700 transition-colors"
               >
                 Clear Filters
+              </button>
+            </div>
+          )}
+
+          {/* Empty State - When no gems at all */}
+          {!loading && !error && gems.length === 0 && (
+            <div className="text-center py-12 mb-16">
+              <Gem className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Gems Available</h3>
+              <p className="text-gray-600 mb-4">Check back later for new arrivals.</p>
+              <button
+                onClick={handleRetry}
+                className="bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-amber-700 transition-colors"
+              >
+                Refresh
               </button>
             </div>
           )}
