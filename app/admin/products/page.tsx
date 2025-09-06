@@ -55,6 +55,10 @@ export default function ProductsPage() {
       toast.success('Product deleted successfully')
       fetchData() // Refresh the list
       
+
+      // Optimistically update local state
+      setProducts(prev => prev.filter(p => p.id !== id))
+
       // Trigger revalidation of product pages
       try {
         await fetch('/api/revalidate', {

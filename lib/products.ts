@@ -263,7 +263,7 @@ export async function deleteProduct(id: number): Promise<void> {
   
   const { error } = await supabase
     .from('products')
-    .update({ is_active: false })
+    .delete()
     .eq('id', id)
 
   if (error) {
@@ -284,6 +284,7 @@ export async function deleteProduct(id: number): Promise<void> {
     console.error('Error revalidating cache:', revalidateError)
   }
 }
+
 
 export async function toggleProductFeatured(id: number, isFeatured: boolean): Promise<Product> {
   const supabase = createClient()
