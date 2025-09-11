@@ -34,7 +34,7 @@ export default function NewGemPage() {
   })
 
   const gemCategories = [
-    "Diamond", "Ruby", "Emerald", "Sapphire", "Pearl", "Opal", "Topaz",
+    "Diamond", "Ruby", "Emerald", "Sapphire", "Pearl", "Opal", "Topaz", "Coral",
     "Amethyst", "Garnet", "Aquamarine", "Turquoise", "Peridot", "Spinel",
     "Citrine", "Zircon", "Moonstone", "Onyx", "Lapis Lazuli"
   ]
