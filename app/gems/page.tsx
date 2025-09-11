@@ -47,10 +47,11 @@ const GEMS_CATEGORY_IMAGES: Record<string, string> = {
   "Moonstone": "https://www.grimballjewelers.com/wp-content/uploads/2024/12/6f4f4d788bc436a1/moonstone-gemstone.jpeg",
   "Onyx": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNthMGEXw0xncVSyKi-In1W9QRUnMjMr1DTg&s",
   "Lapis Lazuli": "https://www.stonestoryjewellery.com/cdn/shop/files/2024_06_08_026174_375x375_crop_center.jpg?v=1718794719",
+  "Coral" : "https://coral.org.in/wp-content/uploads/2016/12/red-coral-stone-ring.jpg",
 }
 
 const gemCategories = [
-  "Diamond", "Ruby", "Emerald", "Sapphire", "Pearl", "Opal", "Topaz",
+  "Diamond", "Ruby", "Emerald", "Sapphire", "Pearl", "Opal", "Topaz","Coral",
   "Amethyst", "Garnet", "Aquamarine", "Turquoise", "Peridot", "Spinel",
   "Citrine", "Zircon", "Moonstone", "Onyx", "Lapis Lazuli"
 ]
