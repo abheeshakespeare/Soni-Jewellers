@@ -10,6 +10,7 @@ import Navbar from "@/components/ui/navbar"
 import Footer from "@/components/ui/footer"
 import { WishlistProvider } from "@/contexts/wishlist-context"
 import WhatsAppButton from "@/app/whatsapp/WhatsAppButton"
+import BumperOffer from "@/app/Offer/BumperOffer";
 
 
 const inter = Inter({ 
@@ -80,6 +81,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <WishlistProvider>
+          <BumperOffer />
           <Navbar />
           <main className="min-h-screen">{children}</main>
           <Suspense fallback={<Skeleton className="h-40" />}>
