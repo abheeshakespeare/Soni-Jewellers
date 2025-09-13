@@ -65,8 +65,8 @@ export default function EditGemPage() {
   const gemTypes = ["Natural", "Lab-grown", "Synthetic"]
 
   const gemCuts = [
-    "Round", "Oval", "Princess", "Cushion", "Emerald", "Pear", "Marquise",
-    "Radiant", "Asscher", "Heart", "Baguette", "Trillion", "Rose", "Cabochon"
+    "Round", "Oval", "Princess", "Cushion", "Emerald", "Pear", "Marquise", "Square",
+    "Radiant", "Asscher", "Heart", "Baguette", "Trillion", "Rose", "Cabochon","Triangle",
   ]
 
   const measurements = ["cts", "grams", "carats", "mm", "inches"]
