@@ -48,12 +48,17 @@ const GEMS_CATEGORY_IMAGES: Record<string, string> = {
   "Onyx": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNthMGEXw0xncVSyKi-In1W9QRUnMjMr1DTg&s",
   "Lapis Lazuli": "https://www.stonestoryjewellery.com/cdn/shop/files/2024_06_08_026174_375x375_crop_center.jpg?v=1718794719",
   "Coral" : "https://coral.org.in/wp-content/uploads/2016/12/red-coral-stone-ring.jpg",
+  "Cats Eye" : "https://rashiratanjaipur.net/Blog/wp-content/uploads/2025/02/how-to-wear-cats-eye-ring-1024x1024.jpg",
+  "Nili" : "https://cdn.dotpe.in/longtail/store-items/6968430/18QUiA4U.jpeg",
+  "Moissanite" : "https://www.jdinstitute.edu.in/media/2021/08/Moissanite-Stones-Facts-4.jpg",
+  "Hessonite" : "https://ik.imagekit.io/gemsonline/wp-content/uploads/2025/03/il_fullxfull.5937494319_haz4-scaled-e1742377112694.jpg",
 }
 
 const gemCategories = [
-  "Diamond", "Ruby", "Emerald", "Sapphire", "Pearl", "Opal", "Topaz","Coral",
+  "Diamond", "Ruby", "Emerald", "Sapphire", "Pearl", "Opal", "Topaz", "Coral",
   "Amethyst", "Garnet", "Aquamarine", "Turquoise", "Peridot", "Spinel",
-  "Citrine", "Zircon", "Moonstone", "Onyx", "Lapis Lazuli"
+  "Citrine", "Zircon", "Moonstone", "Onyx", "Lapis Lazuli",
+  "Cats Eye", "Nili", "Moissanite", "Hessonite"
 ]
 
 const gemTypes = ["Natural", "Lab-grown", "Synthetic"]

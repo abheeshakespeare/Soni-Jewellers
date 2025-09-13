@@ -56,9 +56,10 @@ export default function EditGemPage() {
   })
 
   const gemCategories = [
-    "Diamond", "Ruby", "Emerald", "Sapphire", "Pearl", "Opal", "Topaz",
-    "Amethyst", "Garnet", "Aquamarine", "Turquoise", "Peridot", "Spinel",
-    "Citrine", "Zircon", "Moonstone", "Onyx", "Lapis Lazuli"
+    "Diamond", "Ruby", "Emerald", "Sapphire", "Pearl", "Opal", "Topaz", "Coral",
+  "Amethyst", "Garnet", "Aquamarine", "Turquoise", "Peridot", "Spinel",
+  "Citrine", "Zircon", "Moonstone", "Onyx", "Lapis Lazuli",
+  "Cats Eye", "Nili", "Moissanite", "Hessonite"
   ]
 
   const gemTypes = ["Natural", "Lab-grown", "Synthetic"]

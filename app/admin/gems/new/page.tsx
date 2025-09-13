@@ -35,8 +35,9 @@ export default function NewGemPage() {
 
   const gemCategories = [
     "Diamond", "Ruby", "Emerald", "Sapphire", "Pearl", "Opal", "Topaz", "Coral",
-    "Amethyst", "Garnet", "Aquamarine", "Turquoise", "Peridot", "Spinel",
-    "Citrine", "Zircon", "Moonstone", "Onyx", "Lapis Lazuli"
+  "Amethyst", "Garnet", "Aquamarine", "Turquoise", "Peridot", "Spinel",
+  "Citrine", "Zircon", "Moonstone", "Onyx", "Lapis Lazuli",
+  "Cats Eye", "Nili", "Moissanite", "Hessonite"
   ]
 
   const gemTypes = ["Natural", "Lab-grown", "Synthetic"]
