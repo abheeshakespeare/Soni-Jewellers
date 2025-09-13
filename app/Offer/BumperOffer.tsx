@@ -13,28 +13,40 @@ export default function BumperOffer() {
   const router = useRouter();
 
   useEffect(() => {
-    const seen = localStorage.getItem("bumperOfferSeen");
-    if (!seen) {
+  const seenTimestamp = localStorage.getItem("bumperOfferSeenAt");
+
+  if (!seenTimestamp) {
+    // Never seen before → show banner
+    setShow(true);
+    setTimeout(() => setShowFireworks(true), 500);
+  } else {
+    const lastSeen = new Date(seenTimestamp).getTime();
+    const now = Date.now();
+
+    // 2 hours = 2 * 60 * 60 * 1000 ms
+    if (now - lastSeen >= 2 * 60 * 60 * 1000) {
       setShow(true);
       setTimeout(() => setShowFireworks(true), 500);
     }
+  }
 
-    const updateWindowSize = () => {
-      if (typeof window !== "undefined") {
-        setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-      }
-    };
-
-    updateWindowSize();
-    window.addEventListener("resize", updateWindowSize);
-    return () => window.removeEventListener("resize", updateWindowSize);
-  }, []);
-
-  const handleExplore = () => {
-    localStorage.setItem("bumperOfferSeen", "true");
-    setShow(false);
-    router.push("/");
+  const updateWindowSize = () => {
+    if (typeof window !== "undefined") {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    }
   };
+
+  updateWindowSize();
+  window.addEventListener("resize", updateWindowSize);
+  return () => window.removeEventListener("resize", updateWindowSize);
+}, []);
+
+const handleExplore = () => {
+  // Store timestamp instead of boolean
+  localStorage.setItem("bumperOfferSeenAt", new Date().toISOString());
+  setShow(false);
+  router.push("/");
+};
 
   const PartyPopper = ({ delay = 0 }: { delay?: number }) => (
     <motion.div
