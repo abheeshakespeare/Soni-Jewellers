@@ -5,58 +5,80 @@ import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function BumperOffer() {
   const [show, setShow] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [showFireworks, setShowFireworks] = useState(false);
+  const [bannerUrl, setBannerUrl] = useState<string | null>(null);
+
   const router = useRouter();
+  const supabase = createClientComponentClient();
+
+  // ✅ Fetch banner image from Supabase
+  useEffect(() => {
+    const fetchBanner = async () => {
+      const { data, error } = await supabase
+        .from("banners")
+        .select("banner_url")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (data && data.banner_url) {
+        setBannerUrl(data.banner_url);
+      } else {
+        console.warn("No banner found in Supabase, using fallback image.");
+        setBannerUrl(
+          "https://i.postimg.cc/htH41dZ6/Chat-GPT-Image-Aug-28-2025-09-22-00-AM.png"
+        );
+      }
+
+      if (error) console.error("Error fetching banner:", error);
+    };
+
+    fetchBanner();
+  }, [supabase]);
 
   useEffect(() => {
-  const seenTimestamp = localStorage.getItem("bumperOfferSeenAt");
+    const seenTimestamp = localStorage.getItem("bumperOfferSeenAt");
 
-  if (!seenTimestamp) {
-    // Never seen before → show banner
-    setShow(true);
-    setTimeout(() => setShowFireworks(true), 500);
-  } else {
-    const lastSeen = new Date(seenTimestamp).getTime();
-    const now = Date.now();
-
-    // 2 hours = 2 * 60 * 60 * 1000 ms
-    if (now - lastSeen >= 2 * 60 * 60 * 1000) {
+    if (!seenTimestamp) {
       setShow(true);
       setTimeout(() => setShowFireworks(true), 500);
-    }
-  }
+    } else {
+      const lastSeen = new Date(seenTimestamp).getTime();
+      const now = Date.now();
 
-  const updateWindowSize = () => {
-    if (typeof window !== "undefined") {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+      if (now - lastSeen >= 2 * 60 * 60 * 1000) {
+        setShow(true);
+        setTimeout(() => setShowFireworks(true), 500);
+      }
     }
+
+    const updateWindowSize = () => {
+      if (typeof window !== "undefined") {
+        setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+      }
+    };
+
+    updateWindowSize();
+    window.addEventListener("resize", updateWindowSize);
+    return () => window.removeEventListener("resize", updateWindowSize);
+  }, []);
+
+  const handleExplore = () => {
+    localStorage.setItem("bumperOfferSeenAt", new Date().toISOString());
+    setShow(false);
+    router.push("/");
   };
-
-  updateWindowSize();
-  window.addEventListener("resize", updateWindowSize);
-  return () => window.removeEventListener("resize", updateWindowSize);
-}, []);
-
-const handleExplore = () => {
-  // Store timestamp instead of boolean
-  localStorage.setItem("bumperOfferSeenAt", new Date().toISOString());
-  setShow(false);
-  router.push("/");
-};
 
   const PartyPopper = ({ delay = 0 }: { delay?: number }) => (
     <motion.div
       className="absolute text-2xl md:text-4xl"
       initial={{ scale: 0, rotate: 0 }}
-      animate={{
-        scale: [0, 1.2],
-        rotate: [0, 360],
-        y: [0, -15, 0],
-      }}
+      animate={{ scale: [0, 1.2], rotate: [0, 360], y: [0, -15, 0] }}
       transition={{
         duration: 1,
         delay,
@@ -77,7 +99,12 @@ const handleExplore = () => {
     delay?: number;
   }
 
-  const FloatingEmoji = ({ emoji, initialX, initialY, delay = 0 }: FloatingEmojiProps) => (
+  const FloatingEmoji = ({
+    emoji,
+    initialX,
+    initialY,
+    delay = 0,
+  }: FloatingEmojiProps) => (
     <motion.div
       className="absolute text-xl md:text-2xl pointer-events-none"
       style={{ left: `${initialX}%`, top: `${initialY}%` }}
@@ -103,7 +130,7 @@ const handleExplore = () => {
 
   return (
     <AnimatePresence>
-      {show && (
+      {show && bannerUrl && (
         <>
           <Confetti
             width={windowSize.width}
@@ -140,7 +167,7 @@ const handleExplore = () => {
                 ease: "easeOut",
               }}
             >
-              {/* Background Gradient Animation */}
+              {/* Gradient Background Animation */}
               <div className="absolute inset-0 opacity-10">
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-400"
@@ -179,25 +206,21 @@ const handleExplore = () => {
                 🎉 Mega Bumper Offer 🎉
               </motion.h1>
 
-              {/* Image with Bounce */}
+              {/* Dynamic Image */}
               <motion.div
                 className="relative w-full max-w-xs md:max-w-sm mx-auto mb-4"
                 initial={{ y: 80, opacity: 0, scale: 0.8 }}
-                animate={{
-                  y: 0,
-                  opacity: 1,
-                  scale: [0.8, 1.05, 1],
-                }}
+                animate={{ y: 0, opacity: 1, scale: [0.8, 1.05, 1] }}
                 transition={{
                   delay: 0.3,
                   duration: 0.9,
                   ease: "easeOut",
-                  type: "tween", // ✅ FIXED
+                  type: "tween",
                 }}
               >
                 <Image
-                  src="https://i.postimg.cc/htH41dZ6/Chat-GPT-Image-Aug-28-2025-09-22-00-AM.png"
-                  alt="Special Offer Jewelry"
+                  src={bannerUrl}
+                  alt="Special Offer Banner"
                   width={400}
                   height={300}
                   className="w-full h-auto rounded-2xl shadow-2xl border-4 border-yellow-300"
@@ -227,7 +250,10 @@ const handleExplore = () => {
                 transition={{ delay: 0.5, duration: 0.8 }}
               >
                 Get exciting discounts on our latest jewellery collection.
-                <span className="text-orange-600 font-bold"> Limited time only!</span>
+                <span className="text-orange-600 font-bold">
+                  {" "}
+                  Limited time only!
+                </span>
               </motion.p>
 
               {/* Button */}
@@ -264,10 +290,7 @@ const handleExplore = () => {
                     <motion.div
                       key={i}
                       className="absolute w-2 h-2 bg-yellow-400 rounded-full"
-                      style={{
-                        left: "50%",
-                        top: "30%",
-                      }}
+                      style={{ left: "50%", top: "30%" }}
                       animate={{
                         x: [0, Math.cos((i * 45 * Math.PI) / 180) * 100],
                         y: [0, Math.sin((i * 45 * Math.PI) / 180) * 100],
