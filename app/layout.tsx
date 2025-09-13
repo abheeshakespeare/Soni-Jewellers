@@ -83,6 +83,24 @@ export default function RootLayout({
         <WishlistProvider>
           <BumperOffer />
           <Navbar />
+          <div className="relative bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-400 text-black font-semibold shadow-md overflow-hidden">
+  <div className="marquee-track">
+    {/* First Copy */}
+    <div className="marquee-content">
+      <span>🎉 Soni Jewellers and Navratna Bhandar Mega Opening in Latehar On <strong>24th Sep, 2025</strong></span>
+      <span>💎 Bumper Offer Coming Soon... Stay Connected!</span>
+      <span>📢 Keep Checking the Website for the Mega Offer</span>
+    </div>
+
+    {/* Second Copy */}
+    <div className="marquee-content" aria-hidden="true">
+      <span>🎉 Soni Jewellers and Navratna Bhandar Mega Opening in Latehar On <strong>24th Sep, 2025</strong></span>
+      <span>💎 Bumper Offer Coming Soon... Stay Connected!</span>
+      <span>📢 Keep Checking the Website for the Mega Offer</span>
+    </div>
+  </div>
+</div>
+
           <main className="min-h-screen">{children}</main>
           <Suspense fallback={<Skeleton className="h-40" />}>
             <Footer />
@@ -102,6 +120,7 @@ export default function RootLayout({
           />
           <WhatsAppButton/>
         </WishlistProvider>
+        
       </body>
     </html>
   )

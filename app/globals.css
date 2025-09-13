@@ -98,3 +98,45 @@
 .overflow-x-auto {
   scroll-behavior: smooth;
 }
+
+/* Ribbon Offer */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content; /* take only as much width as content needs */
+  animation: marquee-scroll 20s linear infinite;
+}
+
+.marquee-content {
+  display: inline-flex;
+  flex-shrink: 0;
+  white-space: nowrap;
+  gap: 2rem;
+  padding-right: 2rem; /* space between first and second copy */
+}
+
+.marquee-content span {
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .marquee-track {
+    animation-duration: 28s;
+  }
+
+  .marquee-content {
+    gap: 1.5rem;
+  }
+
+  .marquee-content span {
+    font-size: 0.9rem;
+  }
+}
